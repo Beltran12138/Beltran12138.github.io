@@ -31,7 +31,8 @@ export const person = {
     github: 'https://github.com/Beltran12138',
     huggingface: 'https://huggingface.co/Beltran12138',
     x: 'https://x.com/zkbernard12138',
-    linkedin: 'https://www.linkedin.com/in/han-zhao-b79ab2254/',
+    // bernardzhao 已被占用，退到 bernard-zhao。这是全套账号里唯一人类可读、能和真名对上的入口。
+    linkedin: 'https://www.linkedin.com/in/bernard-zhao/',
   },
 } as const;
 
