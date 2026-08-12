@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import { person, roles } from '../data/profile';
+import { getCollection } from 'astro:content';
+
+const current = roles.find((r) => r.end === null);
+
+const recent = (await getCollection('writing', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
+---
+
+<Base>
+  <h1>{person.name}</h1>
+  <p class="lede">{person.tagline}</p>
+
+  {current && (
+    <p>
+      Currently <strong>{current.title}</strong> at <strong>{current.org}</strong>
+      {current.orgNote && <span class="muted"> ({current.orgNote})</span>}, in {current.location}.
+      I work on perpetuals mechanics, OTC and settlement design, and the risk plumbing underneath
+      them. Most of what I open-source exists because I needed a tool that did not exist yet.
+    </p>
+  )}
+
+  <h2>Writing</h2>
+  {recent.length === 0 ? (
+    <p class="muted">
+      Nothing published yet. First piece in progress:
+      quantifying Hong Kong&rsquo;s crypto trust paradox.
+    </p>
+  ) : (
+    <ul class="entries">
+      {recent.map((entry) => (
+        <li>
+          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
+          <div class="entry-meta">
+            {fmt(entry.data.pubDate)}
+            {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  <p class="small"><a href="/writing">All writing</a> &nbsp;&middot;&nbsp; <a href="/projects">Projects</a> &nbsp;&middot;&nbsp; <a href="/cv">CV</a></p>
+</Base>

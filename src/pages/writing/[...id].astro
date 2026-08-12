@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('writing', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base
+  title={entry.data.title}
+  description={entry.data.summary}
+  article={{
+    headline: entry.data.title,
+    datePublished: entry.data.pubDate.toISOString(),
+    dateModified: entry.data.updatedDate?.toISOString(),
+  }}
+>
+  <article>
+    <h1>{entry.data.title}</h1>
+    <p class="entry-meta">
+      {fmt(entry.data.pubDate)}
+      {entry.data.updatedDate && <> &middot; updated {fmt(entry.data.updatedDate)}</>}
+      {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
+    </p>
+
+    <Content />
+
+    {entry.data.originalSource && (
+      <p class="small muted">Source: {entry.data.originalSource}</p>
+    )}
+  </article>
+
+  <p class="small"><a href="/writing">&larr; All writing</a></p>
+</Base>

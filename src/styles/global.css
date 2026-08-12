@@ -1,0 +1,298 @@
+/*
+  排版驱动的克制设计。刻意不用 CSS 框架 —— 少一个会烂掉的依赖。
+  一套中性灰阶 + 一个强调色，深浅色跟随系统。
+*/
+
+:root {
+  --measure: 68ch;
+  --gap: 1.5rem;
+
+  --bg: #fbfbfa;
+  --fg: #17181a;
+  --fg-muted: #6b6f76;
+  --rule: #e3e3e0;
+  --accent: #1d4ed8;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131416;
+    --fg: #e8e8e6;
+    --fg-muted: #9a9ea6;
+    --rule: #2a2c30;
+    --accent: #7ea2ff;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  font-feature-settings: "kern", "liga";
+  text-rendering: optimizeLegibility;
+}
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ---------- 页头 / 页脚 ---------- */
+
+.site-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 2rem 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 3rem;
+}
+
+.site-head .brand {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.site-head nav {
+  display: flex;
+  gap: 1.1rem;
+  margin-left: auto;
+  font-size: 0.94rem;
+}
+
+.site-head nav a {
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+
+.site-head nav a:hover,
+.site-head nav a[aria-current="page"] {
+  color: var(--fg);
+}
+
+.site-foot {
+  margin-top: 5rem;
+  padding: 1.5rem 0 3rem;
+  border-top: 1px solid var(--rule);
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.site-foot a {
+  color: var(--fg-muted);
+}
+
+/* ---------- 文字 ---------- */
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.9rem;
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin: 3rem 0 1rem;
+}
+
+h3 {
+  font-size: 1.02rem;
+  margin: 2rem 0 0.4rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+.lede {
+  font-size: 1.12rem;
+  color: var(--fg-muted);
+  margin: 0 0 2rem;
+}
+
+.muted {
+  color: var(--fg-muted);
+}
+
+.small {
+  font-size: 0.9rem;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+/* ---------- 列表 ---------- */
+
+.entries {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.entries li {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.entries li:first-child {
+  padding-top: 0;
+}
+
+.entry-title {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.entry-title:hover {
+  color: var(--accent);
+}
+
+.entry-meta {
+  color: var(--fg-muted);
+  font-size: 0.87rem;
+  margin-top: 0.15rem;
+}
+
+/* ---------- CV ---------- */
+
+.role {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.role-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.role-head .org {
+  font-weight: 600;
+}
+
+.role-head .dates {
+  margin-left: auto;
+  color: var(--fg-muted);
+  font-size: 0.87rem;
+  font-family: var(--font-mono);
+}
+
+.role ul {
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.role li {
+  margin-bottom: 0.35rem;
+}
+
+/* ---------- 文章正文 ---------- */
+
+article :is(p, ul, ol, blockquote, pre, table) {
+  margin: 0 0 1.15rem;
+}
+
+article blockquote {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--rule);
+  color: var(--fg-muted);
+}
+
+article pre {
+  overflow-x: auto;
+  padding: 1rem;
+  background: var(--rule);
+  border-radius: 4px;
+  font-size: 0.86rem;
+}
+
+article code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+article :is(th, td) {
+  text-align: left;
+  padding: 0.5rem 0.6rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- 打印（/cv 直接 Ctrl+P 出 PDF）---------- */
+
+@media print {
+  :root {
+    --bg: #fff;
+    --fg: #000;
+    --fg-muted: #444;
+    --rule: #ccc;
+  }
+
+  body {
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  .site-head nav,
+  .site-foot,
+  .no-print {
+    display: none;
+  }
+
+  .wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  .role {
+    break-inside: avoid;
+  }
+}

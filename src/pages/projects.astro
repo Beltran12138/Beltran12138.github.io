@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { projects, groupLabels } from '../data/profile';
+
+const order = ['market-intelligence', 'agent-infra', 'research', 'language-llm'] as const;
+const grouped = order.map((g) => ({
+  group: g,
+  label: groupLabels[g],
+  items: projects.filter((p) => p.group === g),
+}));
+---
+
+<Base title="Projects" description="Open-source tooling for crypto market intelligence and agent infrastructure.">
+  <h1>Projects</h1>
+  <p class="lede">
+    Open tooling, mostly built because the thing I needed did not exist.
+    Full list on <a href="https://github.com/Beltran12138">GitHub</a>.
+  </p>
+
+  {grouped.map(({ label, items }) => items.length > 0 && (
+    <section>
+      <h2>{label}</h2>
+      <ul class="entries">
+        {items.map((p) => (
+          <li>
+            <a class="entry-title" href={p.url}>{p.name}</a>
+            <div class="entry-meta">{p.summary}</div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>

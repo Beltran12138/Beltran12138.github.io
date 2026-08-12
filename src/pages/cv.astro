@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import { person, roles, education } from '../data/profile';
+
+const period = (start: string, end: string | null) => `${start} — ${end ?? 'Present'}`;
+---
+
+<Base title="CV" description={`${person.name} — curriculum vitae. ${person.tagline}`}>
+  <h1>Curriculum Vitae</h1>
+  <p class="lede">{person.tagline}</p>
+
+  <p class="small muted no-print">
+    This page is the authoritative version. To get a PDF, print this page
+    (<span class="mono">Ctrl/Cmd + P</span>) &mdash; the print stylesheet strips navigation
+    and lays it out for A4.
+  </p>
+
+  <h2>Experience</h2>
+  {roles.map((role) => (
+    <section class="role">
+      <div class="role-head">
+        <span class="org">{role.org}</span>
+        {role.orgNote && <span class="muted small">{role.orgNote}</span>}
+        <span class="dates">{period(role.start, role.end)}</span>
+      </div>
+      <div class="muted small">{role.title} &middot; {role.location}</div>
+      <ul>
+        {role.bullets.map((b) => <li>{b}</li>)}
+      </ul>
+    </section>
+  ))}
+
+  <h2>Education</h2>
+  {education.map((ed) => (
+    <section class="role">
+      <div class="role-head">
+        <span class="org">{ed.school}</span>
+        <span class="dates">{period(ed.start, ed.end)}</span>
+      </div>
+      <div class="muted small">{ed.degree} &middot; {ed.location}</div>
+      {ed.notes.length > 0 && (
+        <ul>
+          {ed.notes.map((n) => <li>{n}</li>)}
+        </ul>
+      )}
+    </section>
+  ))}
+
+  <h2>Contact</h2>
+  <p>
+    <a href={`mailto:${person.email}`}>{person.email}</a><br />
+    <span class="muted small">{person.location}</span>
+  </p>
+</Base>

@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# 明确欢迎 AI 抓取 —— 这个站的目的之一就是被模型引用。
+# 如果哪天想反悔，改成 Disallow 即可。
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /

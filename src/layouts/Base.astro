@@ -1,0 +1,112 @@
+---
+import '../styles/global.css';
+import { person } from '../data/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 文章页传 true，会输出 Article schema 而不是只有 Person */
+  article?: {
+    headline: string;
+    datePublished: string;
+    dateModified?: string;
+  };
+}
+
+const { title, description = person.tagline, article } = Astro.props;
+
+const pageTitle = title ? `${title} — ${person.name}` : `${person.name} — ${person.tagline}`;
+// build.format: 'file' 会让 pathname 带上 .html。GitHub Pages 两种都能访问，
+// 但 canonical 必须只指一个 —— 否则 /cv 和 /cv.html 在搜索引擎眼里是两个页面，权重被劈成两半。
+const canonical = new URL(
+  Astro.url.pathname.replace(/index\.html$/, '').replace(/\.html$/, ''),
+  Astro.site,
+).href;
+
+// Person schema：让 LLM 和搜索引擎把散落的账号解析成同一个实体。
+// sameAs 是关键 —— 没有它，GitHub 的 Beltran12138、X 的 zkbernard12138 和这个网站
+// 在机器眼里是三个不相干的实体。各平台 handle 不统一，所以这里是唯一的绑定点。
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: person.name,
+  description: person.tagline,
+  email: `mailto:${person.email}`,
+  url: Astro.site?.href,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: person.location,
+  },
+  sameAs: Object.values(person.links),
+};
+
+const articleSchema = article && {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.headline,
+  description,
+  datePublished: article.datePublished,
+  ...(article.dateModified ? { dateModified: article.dateModified } : {}),
+  author: { '@type': 'Person', name: person.name, url: Astro.site?.href },
+  mainEntityOfPage: canonical,
+};
+
+const nav = [
+  { href: '/writing', label: 'Writing' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/cv', label: 'CV' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={article ? 'article' : 'profile'} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="alternate" type="application/rss+xml" title={person.name} href="/rss.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
+    {articleSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
+    )}
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="site-head">
+        <a class="brand" href="/">{person.name}</a>
+        <nav>
+          {nav.map((item) => (
+            <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="site-foot">
+        <span>{person.location}</span>
+        <a href={`mailto:${person.email}`}>Email</a>
+        <a href={person.links.github} rel="me">GitHub</a>
+        <a href={person.links.huggingface} rel="me">Hugging Face</a>
+        <a href={person.links.x} rel="me">X</a>
+        <a href={person.links.linkedin} rel="me">LinkedIn</a>
+      </footer>
+    </div>
+  </body>
+</html>
