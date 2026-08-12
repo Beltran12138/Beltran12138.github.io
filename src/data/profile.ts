@@ -33,6 +33,11 @@ export const person = {
     x: 'https://x.com/zkbernard12138',
     // bernardzhao 已被占用，退到 bernard-zhao。这是全套账号里唯一人类可读、能和真名对上的入口。
     linkedin: 'https://www.linkedin.com/in/bernard-zhao/',
+    // 小红书「伯纳德zkBernard」：1k+ 粉丝、10k+ 赞藏 —— 全部账号里受众最大的一个。
+    // 内容是 LLM / 语言几何的中文思辨长文，和这里的定位同源，不是生活号。
+    // 注意：小红书对搜索引擎和 LLM 爬虫基本封闭，放进 sameAs 只完成身份绑定，
+    // 不会给这个站带来任何 AI 可见性。受众在那边，可检索性在这边。
+    xiaohongshu: 'https://www.xiaohongshu.com/user/profile/636f19c2000000001f018e3d',
   },
 } as const;
 
@@ -54,18 +59,25 @@ export type Role = {
 export const roles: Role[] = [
   {
     org: 'HighBlock',
-    orgNote: 'BitV — Hong Kong licensed virtual-asset platform',
-    // TODO(确认): 对外用的正式 title。你自述职能是 PM + 运营 + 行研 + FDE，
-    // 但对外只能写一个。建议 "Product & Research" —— 覆盖面最广且不夸大。
+    orgNote: 'BitV — Hong Kong licensed virtual-asset and securities platform (SFC Type 1 / 4 / 9)',
+    // title 与公司记录保持一致，不自封 FDE —— 背调会对这一栏。
+    // 但「forward-deployed」这个词写进了第一条 bullet：它是 2026 最高信号的岗位描述之一，
+    // 又恰好是你实际的工作方式。信号进可搜索文本，title 不冒险。
     title: 'Product & Research',
     start: '2026-01',
     end: null,
     location: 'Hong Kong',
+    // 依据：Notion Archives（113 份 PRD / 调研 / 系统规格）+ 各项目 memory。
+    // 刻意不写的东西：供应商报价金额、合作方名称、LP 名单。
+    // 理由不是合规，是泄密 —— 那些数字是采购谈判信息，写在公开档案上会反噬你自己。
     bullets: [
-      'Authored the perpetual-futures PRD: three-price system (index / mark / last), tiered margin, funding-rate mechanics, liquidation waterfall, ADL ranking, and the full formula set behind them.',
-      'Designed the OTC back-office architecture — RFQ quote engine, order state machine, three-layer risk controls, settlement idempotency, and the FIX / REST / WebSocket API surface.',
-      'Ran market research on Hong Kong brokerage business models and licensed virtual-asset service structures to inform product scope.',
-      'Built the product team\'s internal AI workflow — tool selection, SOPs, and a working agent stack for research and documentation.',
+      'Forward-deployed across the exchange\'s business lines: embedded with securities, VA trading, OTC, and operations teams to turn business problems into shipped product and internal AI systems.',
+      'Authored the perpetual-futures PRD end to end — three-price system (index / mark / last), tiered margin, funding-rate mechanics, liquidation waterfall, ADL ranking, and the full formula set — built against the SFC\'s 2026 derivatives framework, which restricts reference assets to VAs already tradable on the platform\'s own spot market.',
+      'Designed the OTC desk and its back office: multi-LP RFQ quote engine, order state machine, three-layer risk controls, settlement idempotency, and the FIX / REST / WebSocket surface. Modelled the business case for an agency-matching structure with third-party licensed custody, which reaches the market without tying up platform capital.',
+      'Specified the institutional account architecture — omnibus and segregated structures benchmarked against IBKR, HashKey, and OSL — including the cross-system impact assessment for retrofitting it onto a live retail platform.',
+      'Ran the five-year total-cost comparison between competing brokerage-system vendors and made the selection recommendation that set the securities-side build.',
+      'Built the product org\'s internal AI stack: agent workflows, a private RAG layer over the internal knowledge base, an AI-to-Figma design pipeline, reusable prompt/skill SOPs, and a customer-service agent demo now in internal use.',
+      'Feasibility research across RWA tokenisation (tokenised gold, private equity, fixed income), staking, custody and TCSP structures, market-making and matching-engine design — 110+ research documents, PRDs, and system specs in the first seven months.',
     ],
   },
   {
