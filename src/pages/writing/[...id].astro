@@ -23,6 +23,10 @@ const { Content } = await render(entry);
 
 const zh = entry.data.lang === 'zh';
 
+// 抓正文第一张图作为社交卡片图。原创图表比通用卡片好得多 ——
+// 它直接告诉人这篇有实质内容，不是又一篇没插图的观点文。
+const firstImage = entry.body?.match(/!\[[^\]]*\]\((\/figures\/[^)\s]+)\)/)?.[1];
+
 const fmt = (d: Date) =>
   d.toLocaleDateString(zh ? 'zh-CN' : 'en-GB', {
     year: 'numeric',
@@ -39,6 +43,8 @@ const fmt = (d: Date) =>
     headline: entry.data.title,
     datePublished: entry.data.pubDate.toISOString(),
     dateModified: entry.data.updatedDate?.toISOString(),
+    keywords: entry.data.tags,
+    image: firstImage,
   }}
   alternates={sibling ? [{ lang: sibling.data.lang, href: `/writing/${sibling.id}` }] : []}
 >

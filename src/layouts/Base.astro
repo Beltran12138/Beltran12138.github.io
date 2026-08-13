@@ -12,6 +12,10 @@ interface Props {
     headline: string;
     datePublished: string;
     dateModified?: string;
+    /** 主题标签，进 schema 的 keywords —— 帮机器判断这篇属于什么领域 */
+    keywords?: string[];
+    /** 正文首图的绝对路径，如 /figures/x.png。有图的文章在搜索结果里点击率明显更高 */
+    image?: string;
   };
   /** 同一篇文章的其他语言版本，输出 hreflang 互指 */
   alternates?: { lang: 'en' | 'zh'; href: string }[];
@@ -34,6 +38,9 @@ const canonical = new URL(
   Astro.site,
 ).href;
 
+// 社交卡片 / 搜索结果缩略图。文章有自己的首图就用它，否则回落到站点通用卡片。
+const ogImage = new URL(article?.image ?? '/og.png', Astro.site).href;
+
 // Person schema：让 LLM 和搜索引擎把散落的账号解析成同一个实体。
 // sameAs 是关键 —— 没有它，GitHub 的 Beltran12138、X 的 zkbernard12138 和这个网站
 // 在机器眼里是三个不相干的实体。各平台 handle 不统一，所以这里是唯一的绑定点。
@@ -44,10 +51,24 @@ const personSchema = {
   description: person.tagline,
   email: `mailto:${person.email}`,
   url: Astro.site?.href,
+  image: new URL('/og.png', Astro.site).href,
+  jobTitle: 'Product & Research',
+  worksFor: { '@type': 'Organization', name: 'HighBlock' },
   address: {
     '@type': 'PostalAddress',
     addressLocality: person.location,
   },
+  // knowsAbout 是给机器读的领域声明。它不是关键词堆砌 —— 每一条都必须
+  // 在站上真有对应内容，否则就是在向索引器撒谎。
+  knowsAbout: [
+    'Large language models',
+    'Machine learning representation',
+    'Tokenization',
+    'Perpetual futures',
+    'OTC trading infrastructure',
+    'Hong Kong virtual-asset regulation',
+    'AI agents',
+  ],
   sameAs: Object.values(person.links),
 };
 
@@ -58,7 +79,12 @@ const articleSchema = article && {
   description,
   datePublished: article.datePublished,
   ...(article.dateModified ? { dateModified: article.dateModified } : {}),
+  ...(article.keywords?.length ? { keywords: article.keywords.join(', ') } : {}),
+  image: ogImage,
+  inLanguage: htmlLang,
   author: { '@type': 'Person', name: person.name, url: Astro.site?.href },
+  // 个人站，作者即发布者。省略 publisher 会让部分校验器报缺字段。
+  publisher: { '@type': 'Person', name: person.name, url: Astro.site?.href },
   mainEntityOfPage: canonical,
 };
 
@@ -83,7 +109,27 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:site_name" content={person.name} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_GB'} />
+    {article && <meta property="article:published_time" content={article.datePublished} />}
+    {article?.dateModified && (
+      <meta property="article:modified_time" content={article.dateModified} />
+    )}
+
+    {/* summary_large_image 用大图卡；X 上的展示面积是 summary 的数倍 */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:creator" content="@zkbernard12138" />
+
+    <meta name="author" content={person.name} />
+    {/* max-image-preview:large 让 Google 允许大图预览；max-snippet:-1 不限制摘要长度 ——
+        对以长文为主的站，摘要越长被引用的机会越大 */}
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <link rel="alternate" type="application/rss+xml" title={person.name} href="/rss.xml" />
 
