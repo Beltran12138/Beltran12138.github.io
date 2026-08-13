@@ -127,6 +127,12 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     <meta name="twitter:creator" content="@zkbernard12138" />
 
     <meta name="author" content={person.name} />
+    {/* Google Search Console 所有权验证。删掉会掉验证 —— GSC 会定期复查这个标签。
+        另有一份 public/google91bfa8b7e904348c.html 做同样的事，两条腿冗余。 */}
+    <meta
+      name="google-site-verification"
+      content="qHGmww5JRrDocSXA_j-xLDYI3IV2D8mEeq9fI_Erg2g"
+    />
     {/* max-image-preview:large 让 Google 允许大图预览；max-snippet:-1 不限制摘要长度 ——
         对以长文为主的站，摘要越长被引用的机会越大 */}
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
