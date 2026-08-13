@@ -266,6 +266,32 @@ article img {
   height: auto;
 }
 
+/* ---------- 中文正文 ----------
+   中文没有词间空格，同样字号下比英文密得多；行高不放宽会糊成一块。
+   :lang() 只作用于标了 lang="zh-Hans" 的节点，英文页面完全不受影响。 */
+
+:lang(zh-Hans) {
+  font-family: var(--font-sans), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  line-height: 1.85;
+}
+
+article:lang(zh-Hans) :is(p, li) {
+  /* 中英混排时给拉丁字母和数字留出呼吸位 */
+  text-spacing-trim: space-all;
+}
+
+.tag-lang {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.35rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-size: 0.7rem;
+  color: var(--fg-muted);
+  vertical-align: 0.1em;
+}
+
 /* ---------- 打印（/cv 直接 Ctrl+P 出 PDF）---------- */
 
 @media print {

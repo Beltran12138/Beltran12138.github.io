@@ -5,15 +5,26 @@ import { person } from '../data/profile';
 interface Props {
   title?: string;
   description?: string;
+  /** 页面正文语言。中文长文必须传 'zh' —— 否则搜索引擎和屏幕阅读器都会按英文处理。 */
+  lang?: 'en' | 'zh';
   /** 文章页传 true，会输出 Article schema 而不是只有 Person */
   article?: {
     headline: string;
     datePublished: string;
     dateModified?: string;
   };
+  /** 同一篇文章的其他语言版本，输出 hreflang 互指 */
+  alternates?: { lang: 'en' | 'zh'; href: string }[];
 }
 
-const { title, description = person.tagline, article } = Astro.props;
+const {
+  title,
+  description = person.tagline,
+  article,
+  lang = 'en',
+  alternates = [],
+} = Astro.props;
+const htmlLang = lang === 'zh' ? 'zh-Hans' : 'en';
 
 const pageTitle = title ? `${title} — ${person.name}` : `${person.name} — ${person.tagline}`;
 // build.format: 'file' 会让 pathname 带上 .html。GitHub Pages 两种都能访问，
@@ -60,7 +71,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -75,6 +86,19 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     <meta name="twitter:card" content="summary" />
 
     <link rel="alternate" type="application/rss+xml" title={person.name} href="/rss.xml" />
+
+    {alternates.length > 0 && (
+      <>
+        <link rel="alternate" hreflang={htmlLang === 'zh-Hans' ? 'zh' : 'en'} href={canonical} />
+        {alternates.map((alt) => (
+          <link
+            rel="alternate"
+            hreflang={alt.lang}
+            href={new URL(alt.href, Astro.site).href}
+          />
+        ))}
+      </>
+    )}
 
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
     {articleSchema && (

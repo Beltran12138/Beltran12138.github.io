@@ -12,8 +12,9 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month:
 <Base title="Writing" description="Research notes on crypto market structure, Hong Kong virtual-asset regulation, and AI agents.">
   <h1>Writing</h1>
   <p class="lede">
-    Research notes on crypto market structure, Hong Kong virtual-asset regulation,
-    and applying AI agents to both.
+    Long-form on how language models represent the world &mdash; and on crypto market
+    structure and Hong Kong virtual-asset regulation.
+    Pieces marked <span class="tag-lang">中文</span> are in Chinese, first published on Xiaohongshu.
   </p>
 
   {entries.length === 0 ? (
@@ -22,12 +23,17 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month:
     <ul class="entries">
       {entries.map((entry) => (
         <li>
-          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
+          <a class="entry-title" href={`/writing/${entry.id}`} lang={entry.data.lang === 'zh' ? 'zh-Hans' : undefined}>
+            {entry.data.title}
+          </a>
+          {entry.data.lang === 'zh' && <span class="tag-lang">中文</span>}
           <div class="entry-meta">
             {fmt(entry.data.pubDate)}
             {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
           </div>
-          <p class="small muted" style="margin:.35rem 0 0">{entry.data.summary}</p>
+          <p class="small muted" style="margin:.35rem 0 0" lang={entry.data.lang === 'zh' ? 'zh-Hans' : undefined}>
+            {entry.data.summary}
+          </p>
         </li>
       ))}
     </ul>

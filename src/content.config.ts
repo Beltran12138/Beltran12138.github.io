@@ -21,6 +21,9 @@ const writing = defineCollection({
     draft: z.boolean().default(false),
     // 原始出处（如果这篇是从旧研报改写而来），保留可追溯性。
     originalSource: z.string().optional(),
+    // 另一语言版本的 entry id（例：英文篇写 'zh/foo'，中文篇写 'foo'）。
+    // 两边必须互指。没有它，同一篇的中英版会被搜索引擎判成重复内容，权重互相稀释。
+    translationOf: z.string().optional(),
   }),
 });
 
