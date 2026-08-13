@@ -40,14 +40,7 @@ const fmt = (d: Date) =>
     <ul class="entries">
       {recent.map((entry) => (
         <li>
-          <a
-            class="entry-title"
-            href={`/writing/${entry.id}`}
-            lang={entry.data.lang === 'zh' ? 'zh-Hans' : undefined}
-          >
-            {entry.data.title}
-          </a>
-          {entry.data.lang === 'zh' && <span class="tag-lang">中文</span>}
+          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
           <div class="entry-meta">
             {fmt(entry.data.pubDate)}
             {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
