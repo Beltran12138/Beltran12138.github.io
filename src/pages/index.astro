@@ -26,17 +26,28 @@ const fmt = (d: Date) =>
     </p>
   )}
 
+  <p>
+    Separately, and for longer, I write about how language models represent the world &mdash;
+    where meaning stops being symbolic, what a model can predict but never explain, and what
+    that costs us. Two threads, honestly held apart: one is the job, one has been the
+    preoccupation since well before it.
+  </p>
+
   <h2>Writing</h2>
   {recent.length === 0 ? (
-    <p class="muted">
-      Nothing published yet. First piece in progress:
-      quantifying Hong Kong&rsquo;s crypto trust paradox.
-    </p>
+    <p class="muted">Nothing published yet.</p>
   ) : (
     <ul class="entries">
       {recent.map((entry) => (
         <li>
-          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
+          <a
+            class="entry-title"
+            href={`/writing/${entry.id}`}
+            lang={entry.data.lang === 'zh' ? 'zh-Hans' : undefined}
+          >
+            {entry.data.title}
+          </a>
+          {entry.data.lang === 'zh' && <span class="tag-lang">中文</span>}
           <div class="entry-meta">
             {fmt(entry.data.pubDate)}
             {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
