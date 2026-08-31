@@ -129,6 +129,8 @@ If "understanding" were something inside it, you should be able to point to wher
 
 This is the same line, one notch further. Meaning slid from the symbols a human can hold to a geometry a human can't enter; the native tongue from the vocabulary to the manifold; the law from the equation to the weights; "objective," inside evaluation, lost the ruler that stands outside the apparatus. Now it's "understanding" — we took it for a property inside the object, and all along it was a label in the observer's hand. **Understanding isn't in the object. It's in the observer.**
 
+![The same line, one notch further: meaning → native tongue → law → objective → understanding, the newest notch landing on "not in the object, in the observer"](/figures/emergence_fig4_lineage.png)
+
 We didn't build a machine that understands. We built a machine fluent enough that we can't help switching words — and then took the switching for its capability.
 
 The emergence isn't in its capability. It's in our name for it.
