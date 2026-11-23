@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import PostRow from '../components/PostRow.astro';
 import { person, themes, projects } from '../data/profile';
 import { getCollection } from 'astro:content';
 
@@ -14,42 +15,67 @@ const sections = themes.map((t) => ({
   ),
   work: projects.filter((p) => p.theme === t.id),
 }));
+
+// 首屏展示一条真实更正：取精选文章里第一条带原句和新句的。
+const specimen = entries
+  .filter((e) => e.data.featured)
+  .flatMap((e) => e.data.corrections.filter((c) => c.was && c.now).map((c) => ({ e, c })))[0];
+const total = entries.reduce((n, e) => n + e.data.corrections.length, 0);
 ---
 
 <Base>
-  <h1>{person.name}</h1>
-  <p class="lede">{person.tagline}</p>
-  <p>
-    Evidence gates for trading agents, evaluation harnesses, and essays on what language models
-    can and cannot represent. Product and research at HighBlock, Hong Kong.
-    When I get something wrong, it goes on the <a href="/corrections">corrections</a> page.
-  </p>
+  <div class="hero">
+    <div>
+      <h1>{person.tagline}</h1>
+      <p>
+        Mine included. I build evidence gates for trading agents and evaluation harnesses, and write
+        about what language models can and cannot represent. Product and research at HighBlock, Hong Kong.
+      </p>
+    </div>
+    {specimen && (
+      <figure class="slip">
+        <blockquote>
+          <del>{specimen.c.was}</del>
+          <ins><span>{specimen.c.now}</span></ins>
+        </blockquote>
+        <figcaption class="ui">
+          From <a href={`/writing/${specimen.e.id}`}>{specimen.e.data.title}</a>,
+          one of <a href="/corrections">{total} corrections</a> so far.
+        </figcaption>
+      </figure>
+    )}
+  </div>
 
   {sections.map((s) => (
-    <section>
-      <h2>{s.label}</h2>
-      <p class="muted">{s.blurb}</p>
-      <ul class="cards">
-        {s.posts.map((e) => (
-          <li>
-            <a href={`/writing/${e.id}`}>
-              <span class="entry-title">{e.data.title}</span>
-              <span class="kind">{e.data.featured ? 'Essay' : 'Archive'} &middot; {e.data.pubDate.getFullYear()}</span>
-            </a>
-          </li>
-        ))}
-        {s.work.map((p) => (
-          <li>
-            <a href={p.url}>
-              <span class="entry-title">{p.name}</span>
-              <span class="small muted">{p.summary}</span>
-              <span class="kind">Code</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+    <section class="theme">
+      <header>
+        <h2>{s.label}</h2>
+        <p>{s.blurb}</p>
+      </header>
+      <div>
+        {s.posts.length > 0 && (
+          <ul class="rows">{s.posts.map((e) => <li><PostRow entry={e} /></li>)}</ul>
+        )}
+        {s.work.length > 0 && (
+          <>
+            {s.posts.length > 0 && <p class="code-label ui">Code</p>}
+            <ul class="rows">
+              {s.work.map((p) => (
+                <li>
+                  <a class="row code" href={p.url}>
+                    <span>
+                      <span class="title">{p.name}</span>
+                      <span class="desc">{p.summary}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </section>
   ))}
 
-  <p class="small"><a href="/writing">All writing</a> &middot; <a href="/projects">Projects</a> &middot; <a href="/cv">CV</a></p>
+  <p class="ui"><a href="/writing">All writing</a>, including the archive</p>
 </Base>

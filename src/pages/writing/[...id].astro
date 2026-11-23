@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import State from '../../components/State.astro';
+import PostRow from '../../components/PostRow.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -19,7 +21,13 @@ export async function getStaticPaths() {
 }
 
 const { entry, sibling } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2 && h.text.trim().length > 6);
+const related = (await getCollection('writing', ({ data }) => !data.draft))
+  .filter((e) => e.id !== entry.id && e.data.theme === entry.data.theme)
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+const d = entry.data;
 
 const zh = entry.data.lang === 'zh';
 
@@ -49,40 +57,103 @@ const fmt = (d: Date) =>
   }}
   alternates={sibling ? [{ lang: sibling.data.lang, href: `/writing/${sibling.id}` }] : []}
 >
-  <article>
-    <h1>{entry.data.title}</h1>
-    <p class="entry-meta">
-      {fmt(entry.data.pubDate)}
-      {entry.data.updatedDate && <> &middot; updated {fmt(entry.data.updatedDate)}</>}
-      {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
-      {sibling && (
-        <> &middot; <a href={`/writing/${sibling.id}`}>{zh ? 'English version' : '中文版'}</a></>
-      )}
-    </p>
-
-    {(entry.data.confidence || entry.data.falsifier || entry.data.checked) && (
-      <dl class="claim">
-        {entry.data.confidence && <><dt>Confidence</dt><dd>{entry.data.confidence}</dd></>}
-        {entry.data.falsifier && <><dt>Would change my mind</dt><dd>{entry.data.falsifier}</dd></>}
-        {entry.data.checked && <><dt>Last checked</dt><dd>{fmt(entry.data.checked)}{entry.data.checkedScope && <>. {entry.data.checkedScope}</>}</dd></>}
+  <header class="post-head">
+    <h1>{d.title}</h1>
+    <State data={d} />
+    {d.checked && !d.featured && (
+      <p class="notice ui">The corrections below weaken the main argument. This essay is archived until it is rewritten.</p>
+    )}
+    {sibling && <p class="ui"><a href={`/writing/${sibling.id}`}>{zh ? 'English version' : '中文版'}</a></p>}
+    {(d.confidence || d.falsifier || d.checked) && (
+      <dl class="claim ui">
+        {d.confidence && <div><dt>Confidence</dt><dd>{d.confidence}</dd></div>}
+        {d.falsifier && <div><dt>Would change my mind</dt><dd>{d.falsifier}</dd></div>}
+        {d.checked && <div><dt>Checked {fmt(d.checked)}</dt><dd>{d.checkedScope}</dd></div>}
       </dl>
     )}
-    {entry.data.corrections.length > 0 && (
-      <details class="claim" open>
-        <summary>Corrections ({entry.data.corrections.length})</summary>
-        <ul>{entry.data.corrections.map((c) => <li>{c.text}</li>)}</ul>
+    {d.corrections.length > 0 && (
+      <details class="fixes ui">
+        <summary>{d.corrections.length} corrections</summary>
+        <ul>{d.corrections.map((c) => <li>{c.text}</li>)}</ul>
+        {d.corrections.some((c) => c.was) && (
+          <button type="button" id="show-was" aria-pressed="false" hidden>Show original wording in the text</button>
+        )}
       </details>
     )}
-    {!entry.data.featured && (
-      <p class="small muted">{entry.data.checked ? 'Archived: the corrections above weaken the main argument. Awaiting a rewrite.' : 'Archived essay, kept as published. Not rechecked since.'}</p>
-    )}
+  </header>
 
-    <Content />
+  <div class="post">
+    <div class="body">
+      <article>
+        <Content />
+      </article>
+      {d.originalSource && <p class="ui muted">{d.originalSource}</p>}
+      {related.length > 0 && (
+        <nav class="next" aria-label="Related essays">
+          <h2>Read next</h2>
+          <ul class="rows">{related.map((e) => <li><PostRow entry={e} summary={false} /></li>)}</ul>
+        </nav>
+      )}
+    </div>
+    <aside>
+      {toc.length > 2 && (
+        <nav class="toc ui" aria-label="Sections">
+          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+    </aside>
+  </div>
 
-    {entry.data.originalSource && (
-      <p class="small muted">{zh ? '出处：' : 'Source: '}{entry.data.originalSource}</p>
-    )}
-  </article>
+  <dialog class="zoom"><img alt="" /><p class="ui"></p><form method="dialog"><button>Close</button></form></dialog>
 
-  <p class="small"><a href="/writing">&larr; All writing</a></p>
+  <script>
+    // 原文对照：只在读者要求时插入旧句，爬虫和默认阅读看到的都是更正后的文本。
+    const btn = document.querySelector<HTMLButtonElement>('#show-was');
+    if (btn) {
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        const on = btn.getAttribute('aria-pressed') !== 'true';
+        btn.setAttribute('aria-pressed', String(on));
+        btn.textContent = on ? 'Hide original wording' : 'Show original wording in the text';
+        document.querySelectorAll('article .was').forEach((n) => n.remove());
+        if (on) {
+          const fixes = document.querySelectorAll<HTMLElement>('article ins.fix');
+          fixes.forEach((n) => {
+            const del = document.createElement('del');
+            del.className = 'was';
+            del.textContent = n.dataset.was ?? '';
+            n.before(del);
+          });
+          fixes[0]?.scrollIntoView({ block: 'center' });
+        }
+      });
+    }
+
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
+    const mark = () => {
+      let k = -1;
+      heads.forEach((h, n) => { if (h && h.getBoundingClientRect().top < innerHeight * 0.3) k = n; });
+      links.forEach((a, n) => (n === k ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+    };
+    if (links.length) { addEventListener('scroll', mark, { passive: true }); mark(); }
+
+    const dlg = document.querySelector<HTMLDialogElement>('dialog.zoom');
+    document.querySelectorAll<HTMLImageElement>('article img').forEach((img) => {
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-label', `Enlarge figure: ${img.alt}`);
+      const open = () => {
+        if (!dlg) return;
+        const big = dlg.querySelector('img');
+        if (big) { big.src = img.src; big.alt = img.alt; }
+        const cap = dlg.querySelector('p');
+        if (cap) cap.textContent = img.alt;
+        dlg.showModal();
+      };
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+    dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  </script>
 </Base>

@@ -59,7 +59,7 @@ export type Role = {
 export const roles: Role[] = [
   {
     org: 'HighBlock',
-    orgNote: 'BitV, Hong Kong',
+    orgNote: 'BitV',
     // title 与公司记录保持一致，不自封 FDE —— 背调会对这一栏。
     title: 'Product & Research',
     start: '2026-01',

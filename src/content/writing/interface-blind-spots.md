@@ -18,6 +18,8 @@ corrections:
     text: 'The data-scaling paper (2507.07102) was summarised as showing that adding data plateaus. Its abstract says compositional generalization is driven by data diversity and not mere scale, and that diversity can enable perfect generalization from few combinations. The plateau wording has been removed.'
   - date: 2026-11-22
     text: 'The 0.58 (CLEVR) and 0.51 (PUG:SPAR) baselines come from different setups. The table that gives 0.58 gives 0.53 on PUG:SPAR; the permuted-choice setup gives 0.56 and 0.51.'
+    was: '0.51 on PUG:SPAR.'
+    now: '0.53 on PUG:SPAR.'
   - date: 2026-11-22
     text: 'A figure was removed: it mixed the two baselines and labelled the LABCLIP gain as purely an interface change.'
 tags: [llm, multimodal, representation]
@@ -76,7 +78,7 @@ Set the bar first. If blind spots really are a structural property of the interf
 
 CLIP gives the cleanest counter-evidence — clean enough to look purpose-built.
 
-Cross-modally, CLIP is a bag of words. **0.58 on CLEVR. 0.53 on PUG:SPAR.** Hugging the random baseline. The intuitive response arrives immediately: not enough information, scale it up.
+Cross-modally, CLIP is a bag of words. **0.58 on CLEVR. <ins class="fix" data-was="0.51 on PUG:SPAR.">0.53 on PUG:SPAR.</ins>** Hugging the random baseline. The intuitive response arrives immediately: not enough information, scale it up.
 
 LABCLIP puts that response through a wall. Freeze CLIP's vision encoder — parameters unchanged, scale unchanged, training data unchanged, the information represented inside the encoder unchanged — and add a single linear transform on the text side, retraining only the alignment. **Binding accuracy goes from 0.58 to 0.95.**
 

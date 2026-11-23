@@ -8,21 +8,25 @@ const groups = [...themes.map((t) => ({ id: t.id as string, label: t.label })), 
 
 <Base title="Projects" description="Open-source evidence gates, evaluation harnesses and research artifacts.">
   <h1>Projects</h1>
-  <p class="lede">
-    Full list on <a href="https://github.com/Beltran12138">GitHub</a>.
-  </p>
+  <p class="lede">Full list on <a href="https://github.com/Beltran12138">GitHub</a>.</p>
 
-  {groups.map(({ label, items }) => items.length > 0 && (
-    <section>
-      <h2>{label}</h2>
-      <ul class="entries">
-        {items.map((p) => (
-          <li>
-            <a class="entry-title" href={p.url}>{p.name}</a>
-            <div class="entry-meta">{p.summary}</div>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <div class="section">
+    {groups.map(({ label, items }) => items.length > 0 && (
+      <section class="theme">
+        <header><h2>{label}</h2></header>
+        <ul class="rows">
+          {items.map((p) => (
+            <li>
+              <a class="row code" href={p.url}>
+                <span>
+                  <span class="title">{p.name}</span>
+                  <span class="desc">{p.summary}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
 </Base>

@@ -1,15 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
 import { getCollection } from 'astro:content';
 
 const entries = (await getCollection('writing', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 const groups = [
-  { label: 'Essays', note: 'Key numbers rechecked against primary sources; the scope is stated on each page.', items: entries.filter((e) => e.data.featured) },
+  { label: 'Essays', note: 'Rechecked since publication. Each page states what was and was not covered.', items: entries.filter((e) => e.data.featured) },
   { label: 'Archive', note: 'Earlier essays. Those marked with corrections were rechecked and await a rewrite; the rest are as published and not rechecked.', items: entries.filter((e) => !e.data.featured) },
 ];
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', timeZone: 'UTC' });
 ---
 
 <Base title="Writing" description="Essays on how language models represent the world, and on when a number deserves trust.">
@@ -17,21 +17,10 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month:
   <p class="lede">Most of these began as Chinese essays and were rewritten in English.</p>
 
   {groups.map((g) => (
-    <section>
+    <section class="section">
       <h2>{g.label}</h2>
-      <p class="small muted">{g.note}</p>
-      <ul class="entries">
-        {g.items.map((entry) => (
-          <li>
-            <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
-            <div class="entry-meta">
-              {fmt(entry.data.pubDate)}
-              {entry.data.corrections.length > 0 && <> &middot; {entry.data.corrections.length} corrections</>}
-            </div>
-            <p class="small muted" style="margin:.35rem 0 0">{entry.data.summary}</p>
-          </li>
-        ))}
-      </ul>
+      <p class="muted">{g.note}</p>
+      <ul class="rows">{g.items.map((entry) => <li><PostRow entry={entry} /></li>)}</ul>
     </section>
   ))}
 </Base>

@@ -1,6 +1,6 @@
 # bernardzhao-site
 
-个人站 / 长文档案馆。Astro + Markdown，静态输出，零运行时 JS。
+个人站 / 长文档案馆。Astro + Markdown，静态输出，少量原生 JS（主题切换、目录高亮、原文对照、看大图），不依赖它也能完整阅读。
 
 ## 为什么是这个技术选型
 

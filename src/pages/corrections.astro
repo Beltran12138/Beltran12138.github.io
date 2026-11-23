@@ -10,10 +10,19 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 <Base title="Corrections" description="Errors found in published essays, with dates.">
   <h1>Corrections</h1>
   <p class="lede">Errors found in published essays, with the date each was recorded.</p>
+
   {entries.map((e) => (
-    <section>
+    <section class="section">
       <h2><a href={`/writing/${e.id}`}>{e.data.title}</a></h2>
-      <ul>{e.data.corrections.map((c) => <li><span class="mono muted">{iso(c.date)}</span> {c.text}</li>)}</ul>
+      <ul class="erratum">
+        {e.data.corrections.map((c) => (
+          <li>
+            {c.was && c.now && <blockquote><del>{c.was}</del> <ins>{c.now}</ins></blockquote>}
+            <p>{c.text}</p>
+            <span class="ui muted">{iso(c.date)}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   ))}
 </Base>

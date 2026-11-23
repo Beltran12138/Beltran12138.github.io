@@ -28,7 +28,13 @@ const writing = defineCollection({
     checked: z.coerce.date().optional(),
     checkedScope: z.string().optional(),
     // 更正记录，/corrections 页由此自动汇总。
-    corrections: z.array(z.object({ date: z.coerce.date(), text: z.string() })).default([]),
+    corrections: z.array(z.object({
+      date: z.coerce.date(),
+      text: z.string(),
+      // 原句与新句，逐字。首页首屏和 /corrections 会直接展示。
+      was: z.string().optional(),
+      now: z.string().optional(),
+    })).default([]),
     // 原始出处（如果这篇是从旧研报改写而来），保留可追溯性。
     originalSource: z.string().optional(),
     // 另一语言版本的 entry id（例：英文篇写 'zh/foo'，中文篇写 'foo'）。

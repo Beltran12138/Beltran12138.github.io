@@ -13,8 +13,12 @@ checkedScope: 'ELF numbers against arXiv 2605.10938v3; Cola DLM against its abst
 corrections:
   - date: 2026-11-22
     text: 'ELF was presented as beating mainstream models, and section III contrasted it with token autoregression. Its 32-versus-1024-step and 45B-token results are against other diffusion language models (which the paper says typically use over 500B training tokens), not autoregressive ones.'
+    was: 'about a tenth of what mainstream approaches use.'
+    now: 'about a tenth of what those models use.'
   - date: 2026-11-22
     text: 'Section III called Wasserstein-2 geometry "the mathematical root" of the ELF result. ELF does not make that argument (no mention of Wasserstein in the paper); it is my conjecture.'
+    was: 'This is the mathematical root of the training-efficiency results in ELF and Cola DLM.'
+    now: 'My conjecture is that this contributes to the ELF and Cola DLM results.'
   - date: 2026-11-22
     text: 'Section III said Wasserstein-2 space has no boundary, bounded curvature and a smooth Riemannian metric, rated high confidence. That is wrong in general: the Riemannian structure is formal, and curvature is not bounded over all measures. It also said gradients blow up near the simplex boundary; with softmax logits the cross-entropy gradient is p minus y, which is bounded. The Fisher metric degenerates in logit coordinates.'
   - date: 2026-11-22
@@ -34,7 +38,7 @@ originalSource: 'Adapted from the Chinese original, first published on Xiaohongs
 > Three independent mathematical tools, three independent verdicts on discrete tokens versus continuous embeddings:
 >
 > - **Information theory — a draw.** Both inherit the same source-coding loss. Shannon does not permit a free lunch.
-> - **Information geometry — continuous wins.** The Fisher matrix is singular at the simplex boundary; Wasserstein-2 space is smooth. My conjecture is that this contributes to the ELF and Cola DLM results.
+> - **Information geometry — continuous wins.** The Fisher matrix is singular at the simplex boundary; Wasserstein-2 space is smooth. <ins class="fix" data-was="This is the mathematical root of the training-efficiency results in ELF and Cola DLM.">My conjecture is that this contributes to the ELF and Cola DLM results.</ins>
 > - **Representation theory — the field splits.** The physical world carries Lie group structure (SO(3), Galilean) that continuous embeddings can honour. Language carries free-monoid compositional structure, and a discrete token *is* the equivalence class.
 >
 > Combined, they point at one concrete architecture: **discrete at the IO boundary, continuous through the latent middle, training signal extended beyond language.**
@@ -47,7 +51,7 @@ originalSource: 'Adapted from the Chinese original, first published on Xiaohongs
 
 In the first half of 2026, two engineering results turned a long-running philosophical argument into numbers.
 
-Kaiming He's team published ELF (Embedded Language Flows), which keeps the whole of text generation inside a continuous vector space and only projects back to human-readable text at the final step. Thirty-two sampling steps, generation quality above what earlier diffusion language models produce in 1024, trained on roughly 45 billion tokens, about a tenth of what those models use. Four days later ByteDance Seed released Cola DLM, which uses a Text VAE to compress language into a deeper semantic latent space, models the global prior there with flow matching, and only then decodes back to text.
+Kaiming He's team published ELF (Embedded Language Flows), which keeps the whole of text generation inside a continuous vector space and only projects back to human-readable text at the final step. Thirty-two sampling steps, generation quality above what earlier diffusion language models produce in 1024, trained on roughly 45 billion tokens, <ins class="fix" data-was="about a tenth of what mainstream approaches use.">about a tenth of what those models use.</ins> Four days later ByteDance Seed released Cola DLM, which uses a Text VAE to compress language into a deeper semantic latent space, models the global prior there with flow matching, and only then decodes back to text.
 
 Two papers, at moderate scale, showing the same counterintuitive shape: fewer sampling steps, less training data, higher quality.
 

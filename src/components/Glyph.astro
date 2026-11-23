@@ -1,0 +1,54 @@
+---
+// 每篇一张小图，画的是论点本身，不是装饰。蓝 = 那篇文章说「在那里」的东西。
+interface Props { id: string }
+const { id } = Astro.props;
+
+const dots = (pts: number[][], cls = 'f', r = 2) =>
+  pts.map(([x, y]) => `<circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>`).join('');
+const grid = (x0: number, y0: number, nx: number, ny: number, s: number) =>
+  Array.from({ length: nx * ny }, (_, i) => [x0 + (i % nx) * s, y0 + Math.floor(i / nx) * s]);
+
+const art: Record<string, string> = {
+  // 两套不同的内部结构，同一个输出点
+  'understanding-and-fitting':
+    '<path d="M14 18h16v10h16v10h22"/><path d="M14 62c10-14 14 12 22-2s8-16 14-6 10-4 18-8"/><path class="c" d="M68 38l26 2M68 46l26-5"/><circle class="cf" cx="100" cy="40" r="6"/>',
+  // 一条窄缝只让一列点通过
+  'interface-blind-spots':
+    dots(grid(14, 14, 4, 5, 13), 'f') + '<path d="M66 6v26M66 48v26"/>' + dots([[82, 40], [95, 40], [108, 40]], 'cf', 3),
+  // 两端离散，中间连续
+  'tokens-are-ceding-the-middle':
+    '<rect x="8" y="22" width="10" height="10"/><rect x="8" y="35" width="10" height="10"/><rect x="8" y="48" width="10" height="10"/><path class="c" d="M24 40c12-34 22 34 36 0s24-34 36 0"/><rect x="102" y="22" width="10" height="10"/><rect x="102" y="35" width="10" height="10"/><rect x="102" y="48" width="10" height="10"/>',
+  // 三块共享首块 → 合成一块，首块看不见了
+  'the-door-nobody-knew-was-open':
+    '<rect class="cf" x="10" y="14" width="14" height="14"/><rect x="27" y="14" width="14" height="14"/><rect x="44" y="14" width="14" height="14"/><rect class="cf" x="10" y="52" width="14" height="14"/><rect x="27" y="52" width="14" height="14"/><rect x="44" y="52" width="14" height="14"/><path d="M66 40h14m-5-5l5 5-5 5"/><rect class="f" x="88" y="14" width="24" height="14"/><rect class="f" x="88" y="52" width="24" height="14"/>',
+  // 曲面上的路径，投影成一条线
+  'native-tongue-is-a-manifold':
+    '<path d="M10 40c24-38 70-38 100-12"/><path d="M18 50c24-32 60-32 84-12"/><path class="c" d="M26 34c20-2 40 14 66-6"/><g class="d"><path d="M26 36v34M58 36v34M92 30v40"/></g><path d="M10 72h100"/>',
+  // 密集的点，空的等式
+  'the-world-ai-can-compute':
+    dots([[14, 30], [20, 50], [26, 22], [30, 40], [36, 58], [40, 28], [45, 46], [22, 38], [34, 34], [48, 36], [38, 48], [28, 60]], 'cf') +
+    '<path d="M62 36h10M62 44h10"/><path class="d" d="M84 22h26v36h-26z" stroke-dasharray="3 4"/>',
+  // 连续的坡，人为的一道门槛
+  'when-autocomplete-became-understanding':
+    '<path class="c" d="M8 68C50 66 70 18 112 14"/><path class="r" d="M62 8v64" stroke-dasharray="4 4"/>',
+  // 慢波在，REM 缺
+  'claude-dreams-the-boring-half':
+    '<path class="c" d="M8 26c9-20 17-20 26 0s17 20 26 0 17-20 26 0 17 20 26 0"/><path class="d" d="M8 60l5-8 5 14 4-18 6 20 5-12 6 8 4-16 6 18 5-10 6 8 5-16 5 18 6-12 5 8 5-14 6 16 5-10 5 6" stroke-dasharray="3 3"/>',
+  // 同一个点，两把尺
+  'the-same-you-scored-differently':
+    '<path d="M10 16h100M10 64h100"/><path d="M10 16v7M30 16v7M50 16v7M70 16v7M90 16v7M110 16v7"/><path d="M10 64v-7M43 64v-7M77 64v-7M110 64v-7"/><path class="r" d="M60 34L84 16M60 46L38 64"/><circle class="cf" cx="60" cy="40" r="6"/>',
+  // 树还在，根搬走了
+  'hierarchy-moved-house':
+    '<path d="M24 34v12M24 46H10v12M24 46h14v12"/><circle class="d" cx="24" cy="26" r="7" stroke-dasharray="3 3"/><path d="M40 26h38m-6-5l6 5-6 5"/><circle class="cf" cx="96" cy="26" r="8"/>' + dots([[10, 64], [38, 64]], 'f', 5),
+  // 印版与压痕
+  'plato-found-his-wax-tablet':
+    '<rect x="26" y="8" width="68" height="64" rx="3"/><path class="c" d="M38 24h44M38 36h44M38 48h30"/><path class="d" d="M38 60h20"/>',
+  // 三条先后塌下来的曲线
+  'taste-a-two-hundred-year-old-consolation':
+    '<path d="M8 14h14c14 0 10 52 30 54"/><path d="M34 14h14c14 0 10 52 30 54"/><path class="r" d="M60 14h18c14 0 8 34 18 44" stroke-dasharray="4 4"/><path d="M8 72h104"/>',
+};
+---
+
+{art[id] && (
+  <svg class="glyph" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={art[id]} />
+)}

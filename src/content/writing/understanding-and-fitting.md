@@ -13,6 +13,8 @@ checkedScope: 'The gradient argument was re-derived. The cited literature was no
 corrections:
   - date: 2026-11-22
     text: 'The essay said two machines that emit the same token receive identical cross-entropy and identical gradients, and called this definitional. That is too strong. Cross-entropy depends on the probability of the true token, so the two machines must assign the same distribution. Even then only the gradient at the output logits is identical. Backpropagated parameter gradients depend on internal computation and generally differ. What survives: the loss signal itself does not name the mechanism. Title and figure keep the original wording.'
+    was: 'So they receive identical cross-entropy, and identical gradients flow back.'
+    now: 'So they receive identical cross-entropy, and an identical gradient at the output layer.'
   - date: 2026-11-22
     text: 'The capital example was written backwards ("the capital of France" after "Paris").'
 tags: [llm, epistemics]
@@ -51,7 +53,7 @@ The second understands nothing. It has counted, across an enormous corpus, what 
 
 Two machines. Same output distribution.
 
-So they receive **identical cross-entropy**, and an **identical gradient at the output layer**. (Further back, parameter gradients depend on internal computation and generally differ.) To the only judge in the system, there is not one signal separating *genuinely understood* from *happened to fit*. Not because the judge is insufficiently sensitive — because under its metric the two are literally the same point.
+<ins class="fix" data-was="So they receive identical cross-entropy, and identical gradients flow back.">So they receive **identical cross-entropy**, and an **identical gradient at the output layer**.</ins> (Further back, parameter gradients depend on internal computation and generally differ.) To the only judge in the system, there is not one signal separating *genuinely understood* from *happened to fit*. Not because the judge is insufficiently sensitive — because under its metric the two are literally the same point.
 
 ![Two machines, one gradient: the understanding machine and the fitting machine emit the same output, and cross-entropy returns the same gradient to both](/figures/fig_b_same_gradient.png)
 

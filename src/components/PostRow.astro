@@ -1,0 +1,17 @@
+---
+import Glyph from './Glyph.astro';
+import State from './State.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { entry: CollectionEntry<'writing'>; summary?: boolean }
+const { entry, summary = true } = Astro.props;
+---
+
+<a class="row" href={`/writing/${entry.id}`}>
+  <Glyph id={entry.id} />
+  <span>
+    <span class="title">{entry.data.title}</span>
+    {summary && <span class="desc">{entry.data.summary}</span>}
+    <State data={entry.data} />
+  </span>
+</a>

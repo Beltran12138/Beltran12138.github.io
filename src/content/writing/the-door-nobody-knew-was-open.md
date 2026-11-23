@@ -12,12 +12,16 @@ checkedScope: 'Haslett 2025 against the published PDF. CIPS total against FXC In
 corrections:
   - date: 2026-11-22
     text: 'The essay said radical recognition fell from GPT-4 to GPT-4o across three experiments. The paper has six experiments, and the single-token effect comes from Experiments 4 and 5, comparing single-token with three-byte-token characters within each model (Experiment 4: 0.986 versus 0.219 for GPT-4, 0.999 versus 0.432 for GPT-4o). It does not show a generational drop, and Llama 3 was excluded from those two.'
+    was: 'At that same moment, across three experiments Haslett ran, the models'' accuracy at recognising shared radicals went down.'
+    now: 'In Haslett''s experiments, GPT-4 and GPT-4o were both less accurate at recognising shared radicals in characters packed into a single token than in characters split into three.'
   - date: 2026-11-22
     text: 'The European-language control was described with derivational suffixes (-ation, -keit, -zione). Experiment 6 uses inflectional suffixes, such as French -ons.'
   - date: 2026-11-22
     text: 'The essay omitted that shared first tokens also mislead: characters that begin with the same byte share a radical only 11% of the time on average.'
   - date: 2026-11-22
     text: 'CIPS participants were given as 1,683 made up of 176 direct and 1,514 indirect, which does not add up. The split has been removed.'
+    was: 'it had passed 1,683 participating institutions — 176 direct, 1,514 indirect.'
+    now: 'it had reached 1,683 participating institutions.'
   - date: 2026-11-22
     text: 'Haslett was referred to with a gendered pronoun and is now referred to by name.'
   - date: 2026-11-22
@@ -46,7 +50,7 @@ GPT-4-era models saw those prefix patterns over and over across training, and in
 
 Nobody designed this channel. Nobody ever claimed credit for it.
 
-Then the GPT-4o generation "fixed" Chinese tokenization. Common characters got their own vocabulary entries — one character, one token. Bills went down, context windows went up. In Haslett's experiments, GPT-4 and GPT-4o were both less accurate at recognising shared radicals in characters packed into a single token than in characters split into three.
+Then the GPT-4o generation "fixed" Chinese tokenization. Common characters got their own vocabulary entries — one character, one token. Bills went down, context windows went up. <ins class="fix" data-was="At that same moment, across three experiments Haslett ran, the models' accuracy at recognising shared radicals went down.">In Haslett's experiments, GPT-4 and GPT-4o were both less accurate at recognising shared radicals in characters packed into a single token than in characters split into three.</ins>
 
 The point here isn't Chinese. It's the general mechanism it exposes:
 
@@ -162,7 +166,7 @@ The migration's real pace shows the tension. As of September 2025, ISO 20022's s
 
 Now look east.
 
-**CIPS** — China's Cross-border Interbank Payment System — processed 8.22 million cross-border settlements in 2024, worth RMB 175.49 trillion (about USD 24.47 trillion): up 24.25% by count and 42.60% by value. By May 2025 it had reached 1,683 participating institutions. Handsome growth numbers.
+**CIPS** — China's Cross-border Interbank Payment System — processed 8.22 million cross-border settlements in 2024, worth RMB 175.49 trillion (about USD 24.47 trillion): up 24.25% by count and 42.60% by value. By May 2025 <ins class="fix" data-was="it had passed 1,683 participating institutions — 176 direct, 1,514 indirect.">it had reached 1,683 participating institutions.</ins> Handsome growth numbers.
 
 At the same moment, SWIFT's own RMB tracker showed the renminbi at **3% of global SWIFT payments. The dollar at 48%. The euro at 24%.** CIPS is running fast, on a much narrower track.
 

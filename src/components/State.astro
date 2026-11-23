@@ -1,0 +1,15 @@
+---
+// 状态全部由 frontmatter 推出，不手写。
+const { data } = Astro.props;
+const n = data.corrections.length;
+const date = data.pubDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', timeZone: 'UTC' });
+---
+
+<span class="state">
+  <span>{date}</span>
+  {data.checked
+    ? <span class="checked">Rechecked</span>
+    : <span>Not rechecked</span>}
+  {n > 0 && <span class="fixed">{n} {n === 1 ? 'correction' : 'corrections'}</span>}
+  {data.checked && !data.featured && <span>Awaiting a rewrite</span>}
+</span>
