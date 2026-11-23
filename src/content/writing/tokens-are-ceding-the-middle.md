@@ -3,6 +3,22 @@ title: "Tokens Aren't Dying. They're Ceding the Middle."
 summary: 'A structural audit of discrete tokens against continuous embeddings using three independent mathematical tools — information theory, information geometry, and representation theory. The verdicts disagree, and where they disagree tells you the shape of the next architecture.'
 pubDate: 2026-05-27
 lang: en
+theme: representation
+featured: true
+updatedDate: 2026-11-22
+confidence: 'Medium on the shape of the argument, low on the geometry explanation and the timeline.'
+falsifier: 'Any trigger on the falsification dashboard in section VII.'
+checked: 2026-11-22
+checkedScope: 'ELF numbers against arXiv 2605.10938v3; Cola DLM against its abstract. Other citations not rechecked.'
+corrections:
+  - date: 2026-11-22
+    text: 'ELF was presented as beating mainstream models, and section III contrasted it with token autoregression. Its 32-versus-1024-step and 45B-token results are against other diffusion language models (which the paper says typically use over 500B training tokens), not autoregressive ones.'
+  - date: 2026-11-22
+    text: 'Section III called Wasserstein-2 geometry "the mathematical root" of the ELF result. ELF does not make that argument (no mention of Wasserstein in the paper); it is my conjecture.'
+  - date: 2026-11-22
+    text: 'Section III said Wasserstein-2 space has no boundary, bounded curvature and a smooth Riemannian metric, rated high confidence. That is wrong in general: the Riemannian structure is formal, and curvature is not bounded over all measures. It also said gradients blow up near the simplex boundary; with softmax logits the cross-entropy gradient is p minus y, which is bounded. The Fisher metric degenerates in logit coordinates.'
+  - date: 2026-11-22
+    text: 'A figure was removed: it repeated the bounded-curvature and exploding-gradient statements.'
 tags: [llm, representation, architecture]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (May 2026)'
 ---
@@ -18,7 +34,7 @@ originalSource: 'Adapted from the Chinese original, first published on Xiaohongs
 > Three independent mathematical tools, three independent verdicts on discrete tokens versus continuous embeddings:
 >
 > - **Information theory — a draw.** Both inherit the same source-coding loss. Shannon does not permit a free lunch.
-> - **Information geometry — continuous wins.** The Fisher matrix is singular at the simplex boundary; Wasserstein-2 space is smooth. This is the mathematical root of the training-efficiency results in ELF and Cola DLM.
+> - **Information geometry — continuous wins.** The Fisher matrix is singular at the simplex boundary; Wasserstein-2 space is smooth. My conjecture is that this contributes to the ELF and Cola DLM results.
 > - **Representation theory — the field splits.** The physical world carries Lie group structure (SO(3), Galilean) that continuous embeddings can honour. Language carries free-monoid compositional structure, and a discrete token *is* the equivalence class.
 >
 > Combined, they point at one concrete architecture: **discrete at the IO boundary, continuous through the latent middle, training signal extended beyond language.**
@@ -31,7 +47,7 @@ originalSource: 'Adapted from the Chinese original, first published on Xiaohongs
 
 In the first half of 2026, two engineering results turned a long-running philosophical argument into numbers.
 
-Kaiming He's team published ELF (Embedded Language Flows), which keeps the whole of text generation inside a continuous vector space and only projects back to human-readable text at the final step. Thirty-two sampling steps, generation quality above what discrete models produce in 1024, trained on roughly 45 billion tokens — about a tenth of what mainstream approaches use. Four days later ByteDance Seed released Cola DLM, which uses a Text VAE to compress language into a deeper semantic latent space, models the global prior there with flow matching, and only then decodes back to text.
+Kaiming He's team published ELF (Embedded Language Flows), which keeps the whole of text generation inside a continuous vector space and only projects back to human-readable text at the final step. Thirty-two sampling steps, generation quality above what earlier diffusion language models produce in 1024, trained on roughly 45 billion tokens, about a tenth of what those models use. Four days later ByteDance Seed released Cola DLM, which uses a Text VAE to compress language into a deeper semantic latent space, models the global prior there with flow matching, and only then decodes back to text.
 
 Two papers, at moderate scale, showing the same counterintuitive shape: fewer sampling steps, less training data, higher quality.
 
@@ -71,17 +87,15 @@ Amari's information geometry, developed through the 1980s, says a neural network
 
 Apply it to both paradigms. The core difference lies in the manifold their output distributions live on:
 
-![Two output geometries: where the pathology occurs](/figures/fig2_simplex_vs_wasserstein.png)
+**Token autoregression.** At each timestep the model emits a categorical distribution p(xₜ | x₍<ₜ₎), valued on the |V|-dimensional **probability simplex**. That simplex has poor geometry. The boundary is degenerate — some coordinates go to zero — and near the boundary the Fisher metric degenerates in logit coordinates, though the softmax cross-entropy gradient itself stays bounded. In practice, label smoothing pushes the distribution away from the boundary and temperature scaling tunes sharpness. Both are, at bottom, workarounds for simplex boundary pathology.
 
-**Token autoregression.** At each timestep the model emits a categorical distribution p(xₜ | x₍₌ₜ), valued on the |V|-dimensional **probability simplex**. That simplex has poor geometry. The boundary is degenerate — some coordinates go to zero — and near the boundary the Fisher matrix becomes singular, gradient directions blow up, and the optimisation path has to steer clear. In practice, label smoothing pushes the distribution away from the boundary and temperature scaling tunes sharpness. Both are, at bottom, workarounds for simplex boundary pathology.
+**Continuous flow matching.** The model learns a velocity field v_θ(x, t) on ℝᵈ, pushing a noise distribution to the target embedding distribution via an ODE. The whole optimisation happens in **Wasserstein-2 space**, where probability measures are compared by optimal transport distance. That space has only a formal Riemannian structure and is not uniformly smooth, but the regression loss used in practice is an ordinary Euclidean one.
 
-**Continuous flow matching.** The model learns a velocity field v_θ(x, t) on ℝᵈ, pushing a noise distribution to the target embedding distribution via an ODE. The whole optimisation happens in **Wasserstein-2 space**, where probability measures are compared by optimal transport distance. That space has no boundary, bounded curvature, a smooth Riemannian metric, and a natural gradient that approximates the Euclidean one. The optimisation geometry is benign.
-
-This is the mathematical root of ELF beating a discrete model's 1024 steps in 32, on a tenth of the data. It isn't that the network is cleverer. It's that it optimises in Wasserstein space, whose geometry is friendlier than the simplex. Cola DLM's extra Text VAE layer, compressing to a deeper semantic latent, is essentially removing the simplex's discrete symptoms from the core modelling process entirely.
+I conjecture that this contributes to ELF beating earlier diffusion language models' 1024 steps in 32, on a tenth of the data. The paper does not make this argument, and its baselines are not autoregressive. Cola DLM's extra Text VAE layer, compressing to a deeper semantic latent, is essentially removing the simplex's discrete symptoms from the core modelling process entirely.
 
 But there's a detail both papers step around: however elegant the latent, the final step still has to decode back to tokens. That step is a latent → categorical projection, and the geometric pathology returns. The difference is *where* it occurs. The token path absorbs simplex pathology at every timestep — accumulated 1024 times. The continuous path absorbs it once, at the end. More economical, but not eliminated.
 
-**Verdict, layer two: in the latent middle, tokens lose to continuous embeddings, and on optimisation geometry there is no path back.** This is the real engineering signal ELF and Cola DLM contribute, and the physical motivation for fusion architectures. The discrete projection at the IO boundary remains unavoidable.
+**Verdict, layer two: in the latent middle, I expect continuous embeddings to win. This is a conjecture.** This is the real engineering signal ELF and Cola DLM contribute, and the physical motivation for fusion architectures. The discrete projection at the IO boundary remains unavoidable.
 
 ---
 
@@ -186,4 +200,4 @@ Whether that shape leads to AGI is a separate question — and information theor
 
 ---
 
-*Confidence: the mathematical results cited (Shannon source coding, Amari's information geometry, Fisher singularity at the simplex boundary, Wasserstein-2 regularity, group equivariance) are settled (high). The ELF and Cola DLM results are as reported by their authors at moderate scale and have not, to my knowledge, been independently reproduced at frontier scale (medium). The three-layer framing, the attribution of ELF's efficiency to Wasserstein geometry specifically, and the predicted timeline are my own judgement (medium, and lower for the timeline) — falsification conditions in §VII.*
+*Confidence: the mathematical results cited (Shannon source coding, Amari's information geometry, group equivariance) are settled (high). The simplex and Wasserstein statements are weaker than first published; see Corrections. The ELF and Cola DLM results are as reported by their authors at moderate scale and have not, to my knowledge, been independently reproduced at frontier scale (medium). The three-layer framing, the attribution of ELF's efficiency to Wasserstein geometry specifically, and the predicted timeline are my own judgement (medium, and lower for the timeline) — falsification conditions in §VII.*

@@ -3,6 +3,7 @@ title: 'The Same You, Scored Differently'
 summary: 'Changing two backend settings tripled a model''s ARC-AGI-3 score without touching a single weight. Capability is a joint product of the model and the harness — and the machine now reading your résumé prefers sentences it wrote itself, 67 to 82% of the time.'
 pubDate: 2026-08-13
 lang: en
+theme: evidence
 tags: [llm, evaluation, epistemics]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (August 2026)'
 ---

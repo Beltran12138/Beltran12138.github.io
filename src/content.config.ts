@@ -19,6 +19,16 @@ const writing = defineCollection({
     lang: z.enum(['en', 'zh']).default('en'),
     // draft: true 的文章不会进构建产物，可以安全地留在仓库里慢慢写。
     draft: z.boolean().default(false),
+    // 首页按主题策展，featured 才上首页；其余进 /writing 的 archive。
+    theme: z.enum(['evidence', 'representation', 'language', 'institutions']).optional(),
+    featured: z.boolean().default(false),
+    // 可证伪标签。checked = 最后一次对着一手来源核对的日期；没核过就不写，不许默认填。
+    confidence: z.string().optional(),
+    falsifier: z.string().optional(),
+    checked: z.coerce.date().optional(),
+    checkedScope: z.string().optional(),
+    // 更正记录，/corrections 页由此自动汇总。
+    corrections: z.array(z.object({ date: z.coerce.date(), text: z.string() })).default([]),
     // 原始出处（如果这篇是从旧研报改写而来），保留可追溯性。
     originalSource: z.string().optional(),
     // 另一语言版本的 entry id（例：英文篇写 'zh/foo'，中文篇写 'foo'）。

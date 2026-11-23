@@ -1,8 +1,20 @@
 ---
 title: 'Understanding and Fitting Share the Same Gradient'
-summary: 'Cross-entropy is the only judge in LLM training, and it cannot tell a model that understands from one that merely fits — both produce the same token and the same gradient. Which means understanding is never selected for. It only ever sneaks in disguised as compression.'
+summary: 'Cross-entropy is the only judge in LLM training, and it cannot tell a model that understands from one that merely fits — identical output distributions give identical loss and identical logit gradients. Which means understanding is never selected for. It only ever sneaks in disguised as compression.'
 pubDate: 2026-07-08
 lang: en
+theme: representation
+featured: true
+updatedDate: 2026-11-22
+confidence: 'Medium. The grokking extrapolation is a conjecture.'
+falsifier: 'A mechanism in real pretraining that was selected because it is understanding, not because it was cheapest.'
+checked: 2026-11-22
+checkedScope: 'The gradient argument was re-derived. The cited literature was not reread.'
+corrections:
+  - date: 2026-11-22
+    text: 'The essay said two machines that emit the same token receive identical cross-entropy and identical gradients, and called this definitional. That is too strong. Cross-entropy depends on the probability of the true token, so the two machines must assign the same distribution. Even then only the gradient at the output logits is identical. Backpropagated parameter gradients depend on internal computation and generally differ. What survives: the loss signal itself does not name the mechanism. Title and figure keep the original wording.'
+  - date: 2026-11-22
+    text: 'The capital example was written backwards ("the capital of France" after "Paris").'
 tags: [llm, epistemics]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (July 2026)'
 ---
@@ -33,13 +45,13 @@ Training an LLM ultimately does one thing: show it half a sentence, have it gues
 
 Now imagine two machines.
 
-The first has genuinely built an internal representation of the world. It produces "the capital of France" after "Paris" because it holds a structure woven from geography, politics, and language, and *capital* is derived from that structure.
+The first has genuinely built an internal representation of the world. It produces "Paris" after "the capital of France is" because it holds a structure woven from geography, politics, and language, and *capital* is derived from that structure.
 
-The second understands nothing. It has counted, across an enormous corpus, what tends to follow "Paris," and fills in the highest-probability continuation.
+The second understands nothing. It has counted, across an enormous corpus, what tends to follow "the capital of France is," and fills in the highest-probability continuation.
 
-Two machines. Same token out.
+Two machines. Same output distribution.
 
-So they receive **identical cross-entropy**, and **identical gradients** flow back. To the only judge in the system, there is not one signal separating *genuinely understood* from *happened to fit*. Not because the judge is insufficiently sensitive — because under its metric the two are literally the same point.
+So they receive **identical cross-entropy**, and an **identical gradient at the output layer**. (Further back, parameter gradients depend on internal computation and generally differ.) To the only judge in the system, there is not one signal separating *genuinely understood* from *happened to fit*. Not because the judge is insufficiently sensitive — because under its metric the two are literally the same point.
 
 ![Two machines, one gradient: the understanding machine and the fitting machine emit the same output, and cross-entropy returns the same gradient to both](/figures/fig_b_same_gradient.png)
 
@@ -135,7 +147,7 @@ To the only judge in the system, an LLM's understanding and its fitting have alw
 
 *Notes on sourcing and confidence:*
 
-- *Cross-entropy as the sole training objective, and two mechanisms producing identical outputs therefore receiving identical gradients, is definitional (high confidence).*
+- *Cross-entropy as the sole training objective, and two mechanisms with identical output distributions receiving identical loss and identical logit gradients, is definitional (high confidence). Parameter gradients need not match.*
 - *Induction heads and their early, abrupt formation come from the mechanistic-interpretability literature (high confidence).*
 - *Grokking is observed on toy tasks with deliberate overtraining and regularisation (high confidence for what was observed). Extrapolating "understanding happens after the reward goes out" to frontier pretraining is my conjecture, explicitly not proven (medium).*
 - *That a share of "emergent capabilities" are metric artefacts is an established critique in the literature (high). That all of them are is not claimed here.*

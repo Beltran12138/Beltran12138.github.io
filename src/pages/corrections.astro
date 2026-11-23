@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('writing', ({ data }) => !data.draft && data.corrections.length > 0))
+  .sort((a, b) => b.data.corrections[0].date.valueOf() - a.data.corrections[0].date.valueOf());
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base title="Corrections" description="Errors found in published essays, with dates.">
+  <h1>Corrections</h1>
+  <p class="lede">Errors found in published essays, with the date each was recorded.</p>
+  {entries.map((e) => (
+    <section>
+      <h2><a href={`/writing/${e.id}`}>{e.data.title}</a></h2>
+      <ul>{e.data.corrections.map((c) => <li><span class="mono muted">{iso(c.date)}</span> {c.text}</li>)}</ul>
+    </section>
+  ))}
+</Base>

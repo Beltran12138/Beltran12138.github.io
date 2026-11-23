@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found">
+  <h1>Not found</h1>
+  <p>Try the <a href="/writing">writing index</a> or the <a href="/">home page</a>.</p>
+  {/* 站点 URL 一律无尾斜杠；/writing/ 这类请求落到这里，去掉斜杠重试。 */}
+  <script is:inline>
+    if (location.pathname.length > 1 && location.pathname.endsWith('/')) {
+      location.replace(location.pathname.replace(/\/+$/, '') + location.search + location.hash);
+    }
+  </script>
+</Base>

@@ -20,7 +20,7 @@ export const person = {
   // 这是明确的取舍，不是遗漏。
   // 一句话定位。这是整个站最重要的一行字：LLM 靠它判断你是谁。
   // 判据：能不能让一个陌生人在 5 秒内说出「他是做什么的」。
-  tagline: 'Product & research at the intersection of AI agents and crypto markets.',
+  tagline: 'I check whether numbers deserve trust.',
   location: 'Hong Kong',
   email: 'bernard12138@gmail.com',
   // 各平台 handle 维持现状（Beltran12138 / zkbernard12138），不统一。
@@ -59,25 +59,19 @@ export type Role = {
 export const roles: Role[] = [
   {
     org: 'HighBlock',
-    orgNote: 'BitV — Hong Kong licensed virtual-asset and securities platform (SFC Type 1 / 4 / 9)',
+    orgNote: 'BitV, Hong Kong',
     // title 与公司记录保持一致，不自封 FDE —— 背调会对这一栏。
-    // 但「forward-deployed」这个词写进了第一条 bullet：它是 2026 最高信号的岗位描述之一，
-    // 又恰好是你实际的工作方式。信号进可搜索文本，title 不冒险。
     title: 'Product & Research',
     start: '2026-01',
     end: null,
     location: 'Hong Kong',
-    // 依据：Notion Archives（113 份 PRD / 调研 / 系统规格）+ 各项目 memory。
-    // 刻意不写的东西：供应商报价金额、合作方名称、LP 名单。
-    // 理由不是合规，是泄密 —— 那些数字是采购谈判信息，写在公开档案上会反噬你自己。
+    // 只写「做了什么类型的工作」，与 LinkedIn 2026-10-27 口径一致。
+    // 不写产品设计细节、供应商选型、对标对象、内部文档数量。
     bullets: [
-      'Forward-deployed across the exchange\'s business lines: embedded with securities, VA trading, OTC, and operations teams to turn business problems into shipped product and internal AI systems.',
-      'Authored the perpetual-futures PRD end to end — three-price system (index / mark / last), tiered margin, funding-rate mechanics, liquidation waterfall, ADL ranking, and the full formula set — built against the SFC\'s 2026 derivatives framework, which restricts reference assets to VAs already tradable on the platform\'s own spot market.',
-      'Designed the OTC desk and its back office: multi-LP RFQ quote engine, order state machine, three-layer risk controls, settlement idempotency, and the FIX / REST / WebSocket surface. Modelled the business case for an agency-matching structure with third-party licensed custody, which reaches the market without tying up platform capital.',
-      'Specified the institutional account architecture — omnibus and segregated structures benchmarked against IBKR, HashKey, and OSL — including the cross-system impact assessment for retrofitting it onto a live retail platform.',
-      'Ran the five-year total-cost comparison between competing brokerage-system vendors and made the selection recommendation that set the securities-side build.',
-      'Built the product org\'s internal AI stack: agent workflows, a private RAG layer over the internal knowledge base, an AI-to-Figma design pipeline, reusable prompt/skill SOPs, and a customer-service agent demo now in internal use.',
-      'Feasibility research across RWA tokenisation (tokenised gold, private equity, fixed income), staking, custody and TCSP structures, market-making and matching-engine design — 110+ research documents, PRDs, and system specs in the first seven months.',
+      'Product requirements and system specifications for trading and account products.',
+      'Market, competitor and regulatory research supporting product scope.',
+      'Cross-team work with business, operations and engineering to turn requirements into shipped product.',
+      'Internal AI tooling for the product team: agent workflows, knowledge retrieval and reusable SOPs.',
     ],
   },
   {
@@ -157,83 +151,31 @@ export const education = [
   },
 ];
 
-export type Project = {
-  name: string;
-  url: string;
-  group: 'market-intelligence' | 'agent-infra' | 'research' | 'language-llm';
-  summary: string;
-};
+export type Theme = 'evidence' | 'representation' | 'language' | 'institutions';
 
-/**
- * 项目。group 决定它在 /projects 页的归类。
- * 分组本身就是叙事 —— 34 个仓库不分组，在外人眼里就是 34 件互不相干的事。
- */
-export const projects: Project[] = [
-  {
-    name: 'perpkit',
-    url: 'https://github.com/Beltran12138/perpkit',
-    group: 'market-intelligence',
-    summary: 'Perpetual-futures toolkit: real-time funding rates and fee comparison across Binance, OKX, and Gate.',
-  },
-  {
-    name: 'prophetmap',
-    url: 'https://github.com/Beltran12138/prophetmap',
-    group: 'market-intelligence',
-    summary: 'A 19-layer physical supply-chain map for US equities, tracing AI demand through to silicon.',
-  },
-  {
-    name: 'funding-scanner-skill',
-    url: 'https://github.com/Beltran12138/funding-scanner-skill',
-    group: 'market-intelligence',
-    summary: 'Funding-rate scanner packaged as an agent skill.',
-  },
-  {
-    name: 'risk-normalize',
-    url: 'https://github.com/Beltran12138/risk-normalize',
-    group: 'market-intelligence',
-    summary: 'Normalizing on-chain risk-API outputs across providers with incompatible schemas.',
-  },
-  {
-    name: 'Web3Watch-HK',
-    url: 'https://github.com/Beltran12138/Web3Watch-HK',
-    group: 'market-intelligence',
-    summary: "Weekly tracker for Hong Kong's virtual-asset regulatory and market developments.",
-  },
-  {
-    name: 'agent-tool-interop',
-    url: 'https://github.com/Beltran12138/agent-tool-interop',
-    group: 'agent-infra',
-    summary: 'Research on tool-use interoperability across coding agents.',
-  },
-  {
-    name: 'wecom-docs-mcp-server',
-    url: 'https://github.com/Beltran12138/wecom-docs-mcp-server',
-    group: 'agent-infra',
-    summary: 'MCP server for WeCom documents and smartsheets — create, read, edit.',
-  },
-  {
-    name: 'HK Crypto Trust Paradox',
-    url: 'https://github.com/Beltran12138/-fyp-research-4150',
-    group: 'research',
-    summary: 'Quantifying the gap between regulatory compliance and perceived trust in Hong Kong crypto — NLP social listening plus an N=287 survey (Δ=2.52, p<.001).',
-  },
-  {
-    name: 'ming-vintage-llm',
-    url: 'https://github.com/Beltran12138/ming-vintage-llm',
-    group: 'language-llm',
-    summary: 'LoRA fine-tune for Classical Chinese. Finding: style transfers, world-model does not.',
-  },
-  {
-    name: 'POLYGLOT-MATRIX',
-    url: 'https://github.com/Beltran12138/POLYGLOT-MATRIX',
-    group: 'language-llm',
-    summary: 'Multilingual vocabulary corpus spanning 9+ languages.',
-  },
+/** 首页四个主题。文章（frontmatter 的 theme）和项目都挂在这套主题下。 */
+export const themes: { id: Theme; label: string; blurb: string }[] = [
+  { id: 'evidence', label: 'Evidence before trust', blurb: 'Trading records, judge scores, pricing engines: telling a real check from a silent no-op.' },
+  { id: 'representation', label: 'How models represent the world', blurb: 'Tokens, interfaces and objectives, and what each of them cannot hold.' },
+  { id: 'language', label: 'Language and old texts', blurb: 'Classical Chinese, vintage language models, and what a training cutoff really cuts.' },
+  { id: 'institutions', label: 'AI, history, institutions', blurb: 'What earlier infrastructure changes say about this one.' },
 ];
 
-export const groupLabels: Record<Project['group'], string> = {
-  'market-intelligence': 'Crypto market intelligence',
-  'agent-infra': 'Agent infrastructure',
-  research: 'Research',
-  'language-llm': 'Language & LLMs',
-};
+export type Project = { name: string; url: string; theme: Theme | 'tools'; summary: string };
+
+/**
+ * 项目。只列公开且能打开的仓库（2026-11-22 逐个核过）。
+ * 匿名评审期内的投稿对应仓库不在此列，录用后再加。
+ */
+export const projects: Project[] = [
+  { name: 'evidence-deflator', url: 'https://evidencedeflator.com/', theme: 'evidence', summary: 'Is that trading record skill, or could it be luck? Wallet checks, best-of-N rescoring, and knowledge-cutoff leakage audits.' },
+  { name: 'assay', url: 'https://github.com/Beltran12138/assay', theme: 'evidence', summary: 'Check the judge before you trust the score: an evaluation harness for knowledge-answering support agents.' },
+  { name: 'ql-invariants', url: 'https://github.com/Beltran12138/ql-invariants', theme: 'evidence', summary: 'Model-free no-arbitrage invariant scans for QuantLib pricing engines.' },
+  { name: 'warrant', url: 'https://github.com/Beltran12138/warrant', theme: 'evidence', summary: 'Suitability as an on-chain object, not a prompt: revocable warrants for AI-agent trading.' },
+  { name: 'ming-vintage-llm', url: 'https://github.com/Beltran12138/ming-vintage-llm', theme: 'language', summary: 'Same-corpus vintage-LLM experiment in pre-1424 Classical Chinese, with a contamination audit.' },
+  { name: 'cbdb-letter-recipient-linker', url: 'https://github.com/Beltran12138/cbdb-letter-recipient-linker', theme: 'language', summary: 'Link CBDB letter titles to recipient person IDs, with pre-registered evaluations.' },
+  { name: 'agent-tool-interop', url: 'https://github.com/Beltran12138/agent-tool-interop', theme: 'tools', summary: 'Which coding-agent CLIs expose a tool schema a third-party backend can actually drive.' },
+  { name: 'prophetmap', url: 'https://github.com/Beltran12138/prophetmap', theme: 'tools', summary: 'AI industry-chain transmission map for US equities.' },
+  { name: 'gpu-fairprice', url: 'https://github.com/Beltran12138/gpu-fairprice', theme: 'tools', summary: 'Machine-level fair value curves for heterogeneous GPU rental listings.' },
+  { name: 'Web3Watch-HK', url: 'https://github.com/Beltran12138/Web3Watch-HK', theme: 'tools', summary: "Tracker for Hong Kong's virtual-asset regulatory and market developments." },
+];

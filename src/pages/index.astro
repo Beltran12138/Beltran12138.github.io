@@ -1,54 +1,55 @@
 ---
 import Base from '../layouts/Base.astro';
-import { person, roles } from '../data/profile';
+import { person, themes, projects } from '../data/profile';
 import { getCollection } from 'astro:content';
 
-const current = roles.find((r) => r.end === null);
-
-const recent = (await getCollection('writing', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 5);
-
-const fmt = (d: Date) =>
-  d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
+const entries = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const sections = themes.map((t) => ({
+  ...t,
+  // 有精选就只列精选，没有精选的主题列全部
+  posts: ((all) => (all.some((e) => e.data.featured) ? all.filter((e) => e.data.featured) : all))(
+    entries.filter((e) => e.data.theme === t.id)
+  ),
+  work: projects.filter((p) => p.theme === t.id),
+}));
 ---
 
 <Base>
   <h1>{person.name}</h1>
   <p class="lede">{person.tagline}</p>
-
-  {current && (
-    <p>
-      Currently <strong>{current.title}</strong> at <strong>{current.org}</strong>
-      {current.orgNote && <span class="muted"> ({current.orgNote})</span>}, in {current.location}.
-      I work on perpetuals mechanics, OTC and settlement design, and the risk plumbing underneath
-      them. Most of what I open-source exists because I needed a tool that did not exist yet.
-    </p>
-  )}
-
   <p>
-    Separately, and for longer, I write about how language models represent the world &mdash;
-    where meaning stops being symbolic, what a model can predict but never explain, and what
-    that costs us. Two threads, honestly held apart: one is the job, one has been the
-    preoccupation since well before it.
+    Evidence gates for trading agents, evaluation harnesses, and essays on what language models
+    can and cannot represent. Product and research at HighBlock, Hong Kong.
+    When I get something wrong, it goes on the <a href="/corrections">corrections</a> page.
   </p>
 
-  <h2>Writing</h2>
-  {recent.length === 0 ? (
-    <p class="muted">Nothing published yet.</p>
-  ) : (
-    <ul class="entries">
-      {recent.map((entry) => (
-        <li>
-          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
-          <div class="entry-meta">
-            {fmt(entry.data.pubDate)}
-            {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
-          </div>
-        </li>
-      ))}
-    </ul>
-  )}
+  {sections.map((s) => (
+    <section>
+      <h2>{s.label}</h2>
+      <p class="muted">{s.blurb}</p>
+      <ul class="cards">
+        {s.posts.map((e) => (
+          <li>
+            <a href={`/writing/${e.id}`}>
+              <span class="entry-title">{e.data.title}</span>
+              <span class="kind">{e.data.featured ? 'Essay' : 'Archive'} &middot; {e.data.pubDate.getFullYear()}</span>
+            </a>
+          </li>
+        ))}
+        {s.work.map((p) => (
+          <li>
+            <a href={p.url}>
+              <span class="entry-title">{p.name}</span>
+              <span class="small muted">{p.summary}</span>
+              <span class="kind">Code</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 
-  <p class="small"><a href="/writing">All writing</a> &nbsp;&middot;&nbsp; <a href="/projects">Projects</a> &nbsp;&middot;&nbsp; <a href="/cv">CV</a></p>
+  <p class="small"><a href="/writing">All writing</a> &middot; <a href="/projects">Projects</a> &middot; <a href="/cv">CV</a></p>
 </Base>

@@ -3,6 +3,7 @@ title: "The Native Tongue Is Not in the Vocabulary. It's in the Manifold."
 summary: '"Which human language suits AI best" is the wrong question. Human language is lossy compression built for a serial human channel the model does not have. Force a reasoning model into a single language and its maths accuracy drops 5.6 points.'
 pubDate: 2026-06-10
 lang: en
+theme: language
 tags: [llm, language, representation]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (June 2026)'
 ---

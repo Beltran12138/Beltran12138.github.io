@@ -1,8 +1,25 @@
 ---
 title: 'Scale Does Not Fill an Interface Blind Spot'
-summary: 'Freeze CLIP''s vision encoder, change nothing about its information, and retrain only a linear map on the text side: binding accuracy jumps from 0.58 to 0.95. The blind spot was never in the encoder. It was in the interface — and no amount of scale touches it.'
+summary: 'Freeze CLIP''s vision encoder, change nothing about its information, and retrain only a linear map on the text side: binding accuracy jumps from 0.58 to 0.95. An essay on interfaces and what they cannot carry, with counter-evidence listed in its corrections.'
 pubDate: 2026-07-13
 lang: en
+theme: representation
+updatedDate: 2026-11-22
+confidence: 'Low to medium. The fine-tuning result below cuts against the strong form of the claim.'
+falsifier: 'A single interface whose blind spot shrinks steadily with scale and shows no ceiling.'
+checked: 2026-11-22
+checkedScope: 'CLIP and LABCLIP numbers against arXiv 2502.03566v3; V-JEPA against 2605.30542; data scaling against the abstract of 2507.07102.'
+corrections:
+  - date: 2026-11-22
+    text: 'Omitted counter-evidence. In the same table as the 0.58 and 0.95 figures, CLIP fine-tuned with hard negatives reaches 1.00 on CLEVR, retraining the whole model. So the claim that only a changed interface removes the blind spot does not follow: changing the training objective does it too.'
+  - date: 2026-11-22
+    text: 'LABCLIP is not only a structural change. Its linear map (589.8K parameters) is trained, and the paper credits negative samples. The text called the problem "the cosine-similarity alignment interface", which the experiment does not isolate.'
+  - date: 2026-11-22
+    text: 'The data-scaling paper (2507.07102) was summarised as showing that adding data plateaus. Its abstract says compositional generalization is driven by data diversity and not mere scale, and that diversity can enable perfect generalization from few combinations. The plateau wording has been removed.'
+  - date: 2026-11-22
+    text: 'The 0.58 (CLEVR) and 0.51 (PUG:SPAR) baselines come from different setups. The table that gives 0.58 gives 0.53 on PUG:SPAR; the permuted-choice setup gives 0.56 and 0.51.'
+  - date: 2026-11-22
+    text: 'A figure was removed: it mixed the two baselines and labelled the LABCLIP gain as purely an interface change.'
 tags: [llm, multimodal, representation]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (July 2026)'
 ---
@@ -15,7 +32,7 @@ originalSource: 'Adapted from the Chinese original, first published on Xiaohongs
 
 - CLIP recognises every object in an image — near-perfect at single-image identification — yet cannot say whether the knife is cutting the apple or the hand. More data and bigger models do not fill that gap.
 - The reason: every interface anchors the world along one dimension. Language anchors on token distribution, action on conditional next-state, alignment on image-text similarity. Whatever the anchor can't hold is the blind spot. Anchoring and blindness are two halves of one act.
-- LABCLIP freezes CLIP's vision encoder — parameters, scale, data, and encoded information all unchanged — and retrains alignment through a single linear transform on the text side. Binding accuracy goes from **0.58 to 0.95**. The information was in the encoder all along. The blind spot lived in the alignment interface.
+- LABCLIP freezes CLIP's vision encoder — parameters, scale, data, and encoded information all unchanged — and retrains alignment, with negative samples, through a single linear transform on the text side. Binding accuracy goes from **0.58 to 0.95**. The information was in the encoder all along. The blind spot lived in the alignment interface.
 - The heavily-funded bet that a single physical foundation plus scale will emerge full-domain fidelity has a most-advanced public implementation, V-JEPA 2-AC, that fails to reproduce real contact dynamics when you change the contact point or the material. Dimensions an action interface can't anchor stay unanchored no matter how much scale you add.
 - Blind spots can't be removed, but they can be *relocated* to somewhere another interface covers. No single interface holds the whole world. The way out is complementarity.
 
@@ -59,15 +76,13 @@ Set the bar first. If blind spots really are a structural property of the interf
 
 CLIP gives the cleanest counter-evidence — clean enough to look purpose-built.
 
-Cross-modally, CLIP is a bag of words. **0.58 on CLEVR. 0.51 on PUG:SPAR.** Hugging the random baseline. The intuitive response arrives immediately: not enough information, scale it up.
+Cross-modally, CLIP is a bag of words. **0.58 on CLEVR. 0.53 on PUG:SPAR.** Hugging the random baseline. The intuitive response arrives immediately: not enough information, scale it up.
 
 LABCLIP puts that response through a wall. Freeze CLIP's vision encoder — parameters unchanged, scale unchanged, training data unchanged, the information represented inside the encoder unchanged — and add a single linear transform on the text side, retraining only the alignment. **Binding accuracy goes from 0.58 to 0.95.**
 
-The information was in the encoder the whole time. Scale was already sufficient. The blind spot was never in the encoder; it was in the cosine-similarity alignment interface. Move the interface and the blind spot disappears. Leave the interface and add scale and the blind spot doesn't move an inch. An ICML 2025 data-scaling study adds the other cut: adding data alone produces only partial, imperfect improvement in compositionality, plateauing rather than decreasing monotonically.
+The information was in the encoder the whole time. Scale was already sufficient. The blind spot was never in the encoder; it was in the cosine-similarity alignment interface. Move the interface and the blind spot disappears. The paper reports near-chance CLIP results across several backbone sizes, which is not a full scaling study. An ICML 2025 study adds the other cut: compositional generalization is driven by data diversity, not mere data scale. (See Corrections: full fine-tuning with hard negatives also closes the gap.)
 
 CLIP is the cleanest specimen because it's the only interface where you can *surgically separate* "is the information there" from "does the interface transmit it." A linear probe proves the information is present — unimodal probe accuracy **0.96**, both colour and shape made it into the encoder. The alignment interface proves it can't get across — cross-modal **0.50**, binding lost. Neither the language interface nor the action interface permits a separation that clean. CLIP isn't just one of the three pillars. It's the test bench for the whole claim.
-
-![Surgical separation in CLIP: unimodal probe at 0.96 (the information reached the encoder) against cross-modal binding at the random baseline (the interface doesn't transmit it), with LABCLIP jumping to 0.95 after changing only the interface](/figures/fig2_clip_surgical_separation.png)
 
 **The blind spot isn't missing information. It's an interface that doesn't transmit.**
 
@@ -131,7 +146,7 @@ The claim, closed: any single interface, however powerful, comes with dimensions
 
 *Notes on sourcing and confidence:*
 
-- *CLIP behaving as a bag-of-words cross-modally but not unimodally; CLEVR 0.58 / PUG:SPAR 0.51 / PUG:SPARE 0.50 at the random baseline; LABCLIP freezing CLIP weights and adding a linear layer on the text encoder side taking CLEVR binding from 0.58 to 0.95; unimodal linear probe ~0.96 against a cross-modal result at chance; ICML 2025 data-scaling results showing partial/imperfect compositionality that plateaus with scale alone — all from Koishigarina & Uselis, "CLIP Behaves like a Bag-of-Words Model Cross-modally but not Unimodally" (arXiv:2502.03566, ICLR 2026) and "Does Data Scaling Lead to Visual Compositional Generalization?" (arXiv:2507.07102, ICML 2025), checked against source excerpts. High confidence. The CLIP paper separately reports 0.56 on CLEVR under a permuted two-choice setup; this piece uses the 0.58 baseline LABCLIP was compared against, consistently.*
+- *CLIP behaving as a bag-of-words cross-modally but not unimodally; CLEVR 0.58 / PUG:SPAR 0.53 / PUG:SPARE 0.50 near the random baseline; LABCLIP freezing CLIP weights and adding a linear layer on the text encoder side taking CLEVR binding from 0.58 to 0.95; unimodal linear probe ~0.96 against a cross-modal result at chance; ICML 2025 results attributing compositional generalization to data diversity over scale — all from Koishigarina & Uselis, "CLIP Behaves like a Bag-of-Words Model Cross-modally but not Unimodally" (arXiv:2502.03566, ICLR 2026) and "Does Data Scaling Lead to Visual Compositional Generalization?" (arXiv:2507.07102, ICML 2025), checked against source excerpts. High confidence. The CLIP paper separately reports 0.56 on CLEVR under a permuted two-choice setup; this piece uses the 0.58 baseline LABCLIP was compared against, consistently.*
 - *V-JEPA 2-AC failing to reliably reproduce ground truth on wall-pushing when contact point or material changes, because it optimises latent visual discrepancy rather than real contact dynamics — from arXiv 2605.30542 §A.4, §B.3 experiments and §2.2, checked against source. High confidence.*
 - *"An action interface anchors only the action-relevant subspace, and irrelevant dimensions still collapse" is an inference at the level of definitions (high confidence). Using it as evidence for the broader claim that every single interface carries a blind spot is my reframing, not language from that paper.*
 - *"Blind spots are a structural property of the interface; changing the interface relocates rather than removes them" is this piece's own claim — my judgement, and falsifiable. The falsification lines are the three watchdogs in §VII.*

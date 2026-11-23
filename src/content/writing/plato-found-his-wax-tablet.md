@@ -3,6 +3,7 @@ title: 'Plato Finally Found His Wax Tablet'
 summary: 'Anthropic cut Claude''s blackmail rate to zero not by showing it rules but by feeding it millions of tokens of synthetic fiction about a psychologically healthy AI. That is not alignment engineering. It is fiction authorship — and it is the thing Plato designed 2,400 years ago and could never build.'
 pubDate: 2026-05-19
 lang: en
+theme: institutions
 tags: [llm, alignment, philosophy]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (May 2026)'
 ---

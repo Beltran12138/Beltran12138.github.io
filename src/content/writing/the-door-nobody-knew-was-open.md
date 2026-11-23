@@ -1,8 +1,29 @@
 ---
 title: 'The Door Nobody Knew Was Open'
-summary: 'Two uncoordinated engineering decisions accidentally gave GPT-4 a shortcut for reading meaning out of Chinese character shapes. Fixing the tokenizer closed it. The same mechanism is retiring SWIFT MT — and it is how infrastructure quietly deletes capabilities nobody knew they had.'
+summary: 'Two uncoordinated engineering decisions accidentally gave language models a shortcut for reading radicals out of Chinese character bytes. Packing a character into one token hides it. The essay asks whether infrastructure upgrades delete unplanned capabilities the same way.'
 pubDate: 2026-05-14
 lang: en
+theme: institutions
+updatedDate: 2026-11-22
+confidence: 'High on the within-model token effect. Medium to low on extending it to finance and generations of models.'
+falsifier: 'Any of the three signals in section V running the other way.'
+checked: 2026-11-22
+checkedScope: 'Haslett 2025 against the published PDF. CIPS total against FXC Intelligence. SWIFT, mBridge and typewriter passages not rechecked.'
+corrections:
+  - date: 2026-11-22
+    text: 'The essay said radical recognition fell from GPT-4 to GPT-4o across three experiments. The paper has six experiments, and the single-token effect comes from Experiments 4 and 5, comparing single-token with three-byte-token characters within each model (Experiment 4: 0.986 versus 0.219 for GPT-4, 0.999 versus 0.432 for GPT-4o). It does not show a generational drop, and Llama 3 was excluded from those two.'
+  - date: 2026-11-22
+    text: 'The European-language control was described with derivational suffixes (-ation, -keit, -zione). Experiment 6 uses inflectional suffixes, such as French -ons.'
+  - date: 2026-11-22
+    text: 'The essay omitted that shared first tokens also mislead: characters that begin with the same byte share a radical only 11% of the time on average.'
+  - date: 2026-11-22
+    text: 'CIPS participants were given as 1,683 made up of 176 direct and 1,514 indirect, which does not add up. The split has been removed.'
+  - date: 2026-11-22
+    text: 'Haslett was referred to with a gendered pronoun and is now referred to by name.'
+  - date: 2026-11-22
+    text: 'A figure was removed: it repeated the three-experiments claim and mixed the paper''s percentages with estimates for other tokenizers.'
+  - date: 2026-11-22
+    text: 'A paragraph attributed specific hedges to Haslett that I could not find in the paper''s limitations section. It has been replaced with a limitation the paper does state.'
 tags: [llm, tokenization, infrastructure]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (May 2026)'
 ---
@@ -25,7 +46,7 @@ GPT-4-era models saw those prefix patterns over and over across training, and in
 
 Nobody designed this channel. Nobody ever claimed credit for it.
 
-Then the GPT-4o generation "fixed" Chinese tokenization. Common characters got their own vocabulary entries — one character, one token. Bills went down, context windows went up. At that same moment, across three experiments Haslett ran, the models' accuracy at recognising shared radicals went down.
+Then the GPT-4o generation "fixed" Chinese tokenization. Common characters got their own vocabulary entries — one character, one token. Bills went down, context windows went up. In Haslett's experiments, GPT-4 and GPT-4o were both less accurate at recognising shared radicals in characters packed into a single token than in characters split into three.
 
 The point here isn't Chinese. It's the general mechanism it exposes:
 
@@ -41,25 +62,25 @@ This is happening well outside AI. SWIFT's MT message standard — a financial g
 
 Haslett's experimental design is almost offensively simple.
 
-Three tasks, run across GPT-4, GPT-4o, and Llama 3:
+Three kinds of Chinese task (five of the six experiments), run on GPT-4 and GPT-4o, with Llama 3 in the first three:
 
 1. Ask the model directly whether 茶 and 茎 share a semantic radical.
 2. Ask it to rate the semantic similarity of two characters.
-3. Give it four characters and ask which one doesn't belong.
+3. Give it five characters and ask which one doesn't belong.
 
-Behind each task sits the same 2×2: do the two characters actually share a radical, and do they share a first token under the tokenizer. That design lets you measure the radical effect and the token-sharing effect separately.
+The first experiments cross two factors: do the two characters actually share a radical, and do they share a first token under the tokenizer. That design lets you measure the radical effect and the token-sharing effect separately.
 
 If models understood Chinese characters purely by looking up a vector by token ID, then whether 茶 and 茎 share a radical should be *independent* of how the tokenizer chops them. One character, one ID, semantics learned from training.
 
 The data says otherwise.
 
-Under GPT-4's older tokenizer, **89% of Chinese characters were split into multiple tokens**, and the byte sequences preserved the UTF-8 radical prefix. That generation of models recognises shared radicals at significantly higher accuracy. Under GPT-4o's newer tokenizer, only **57%** remain multi-token; most are packed into single IDs. Accuracy drops.
+Under GPT-4's older tokenizer, **89% of Chinese characters were split into multiple tokens**, and the byte sequences preserved the UTF-8 radical prefix. Under GPT-4o's newer tokenizer, **57%** remain multi-token. Within each model, accuracy on same-radical pairs is far lower for single-token characters: 0.219 against 0.986 in GPT-4, and 0.432 against 0.999 in GPT-4o.
 
 What dropped isn't "can it handle Chinese." It's "can it read a semantic category directly off the shape of the character." A model can of course learn indirectly, from training data, that 焱, 炎, and 灼 show up in similar contexts. But that route is long. The byte-level prefix offered a nearly free shortcut — one that appears in no engineer's design document.
 
-Haslett hedges carefully: the finding is limited to fine-grained semantic tasks tied to character form, and does not amount to "GPT-4o is worse at Chinese." Architecture, training data, and parameter count all changed too; attributing an accuracy shift solely to tokenization granularity would be over-attribution.
+The paper's limitations section notes that it studied characters in isolation, and that misleading tokens will matter less inside sentences. Nothing here amounts to "GPT-4o is worse at Chinese."
 
-That's honest research. But the effect is real and directionally consistent — three experiments, three models, multiple 2×2 splits, all showing the same sign: **coarser tokens, worse radical recognition.**
+The effect is large in both models tested: **coarser tokens, worse radical recognition.** The cue also misleads, since characters that begin with the same byte share a radical only 11% of the time on average.
 
 And by design, this channel *should not have existed*. The Unicode Consortium wasn't designing for LLMs. BPE wasn't designed for radical recognition. GPT-2's engineers weren't thinking about Chinese character morphology. Its birth was pure side effect. Its disappearance will be too.
 
@@ -69,13 +90,13 @@ And by design, this channel *should not have existed*. The Unicode Consortium wa
 
 There's a section of Haslett's paper that Chinese media coverage skipped almost entirely.
 
-In the same framework, she ran a control across **12 European languages**. Not radicals this time — suffixes.
+In the same framework, Haslett ran a control across **12 European languages**. Not radicals this time — suffixes.
 
-English *-ation, -ity, -ness*. German *-keit, -ung*. Italian *-zione*. These suffixes carry part-of-speech and semantic-category information. When a tokenizer splits the suffix and stem into different tokens, accuracy at recognising nominalisation, verbalisation, and adjectival category drops. When the split aligns with the morphological boundary, accuracy recovers.
+These are inflectional suffixes, such as French *-ons*, which marks first-person-plural verbs. When tokens and suffixes are misaligned, the models categorise the words less accurately.
 
 Twelve languages. Same conclusion.
 
-Her one-word summary: **pervasive**.
+The paper's word for it: **pervasive**.
 
 The follow-up with Cai, in *TACL* 2025, extends this to 41 languages across three generations of GPT tokenizers. Same finding: tokens capture morphological information even when they look nothing like morphemes, and misalignment between tokenizer and linguistic morphology systematically damages the model's semantic representations.
 
@@ -86,8 +107,6 @@ European morphological misalignment hides deeper. It's still there, and the effe
 That pushes the claim past "Chinese got a raw deal" to somewhere more uncomfortable: **every natural language on earth is either aligned or misaligned with its own morphology at the tokenizer layer** — and the industry's direction of travel is toward longer, cleaner, higher-coverage tokens. Which means misalignment is almost certain to increase.
 
 Every language is being sanded down with the same sandpaper. The moment it's smooth, the things that needed a rough surface to sit on fall off.
-
-![Accuracy across Haslett's three experiments, by tokenizer granularity](/figures/closed-door_fig2_multitoken_fraction.png)
 
 ---
 
@@ -143,7 +162,7 @@ The migration's real pace shows the tension. As of September 2025, ISO 20022's s
 
 Now look east.
 
-**CIPS** — China's Cross-border Interbank Payment System — processed 8.22 million cross-border settlements in 2024, worth RMB 175.49 trillion (about USD 24.47 trillion): up 24.25% by count and 42.60% by value. By May 2025 it had passed 1,683 participating institutions — 176 direct, 1,514 indirect. Handsome growth numbers.
+**CIPS** — China's Cross-border Interbank Payment System — processed 8.22 million cross-border settlements in 2024, worth RMB 175.49 trillion (about USD 24.47 trillion): up 24.25% by count and 42.60% by value. By May 2025 it had reached 1,683 participating institutions. Handsome growth numbers.
 
 At the same moment, SWIFT's own RMB tracker showed the renminbi at **3% of global SWIFT payments. The dollar at 48%. The euro at 24%.** CIPS is running fast, on a much narrower track.
 
@@ -168,9 +187,9 @@ Three explicit signals. Any one of them running the other way and I revise.
 **Signal 1 — replicating Haslett on byte-level LLMs.**
 Meta's Byte Latent Transformer (December 2024) already matches Llama 3 at 8B parameters with 50% fewer inference FLOPs. HKU's EvaByte, trained on 1.5T bytes, catches tokenizer-based models at 5× the data efficiency. Byte-level architectures went from research to commercially viable across 2025–2026.
 
-The question: **re-run Haslett's three experiments on BLT or EvaByte. Does radical recognition recover?**
+The question: **re-run Haslett's experiments on BLT or EvaByte. Does radical recognition recover?**
 
-If it recovers to something near GPT-4-era levels, the byte-level semantic channel is real and restorable, and my thesis strengthens. If it doesn't, the "accidental channel" may be an artifact specific to GPT-4's training data rather than a structural product of BPE byte fragmentation, and my thesis weakens. This is a prediction with a timetable: somebody probably runs this in 2026–2027.
+If it recovers to something near the three-token levels above, the byte-level semantic channel is real and restorable, and my thesis strengthens. If it doesn't, the "accidental channel" may be an artifact specific to GPT-4's training data rather than a structural product of BPE byte fragmentation, and my thesis weakens. This is a prediction with a timetable: somebody probably runs this in 2026–2027.
 
 **Signal 2 — non-Western financial behaviour after the ISO 20022 cutover.**
 Three observable variables in the 12–24 months after 22 November 2025:
@@ -181,7 +200,7 @@ Three observable variables in the 12–24 months after 22 November 2025:
 If (a) falls, (b) skews to emerging markets, and (c) accelerates, then MT's loose fields really were carrying non-Western financial behaviour, and the thesis strengthens. If all three stay flat, there was no accidental channel — the behaviour was already running inside the English-language financial system and the migration changed nothing. The financial half of my thesis collapses.
 
 **Signal 3 — can retraining restore the lost capability?**
-If someone shows that retraining a byte-aware embedding layer on GPT-4o's tokenizer, or fine-tuning an adapter specialised for character-form structure, restores radical recognition to GPT-4-era levels — then erasure is compensable, and this is a training-data and architecture problem, not a structural loss.
+If someone shows that retraining a byte-aware embedding layer on GPT-4o's tokenizer, or fine-tuning an adapter specialised for character-form structure, restores radical recognition to the three-token levels — then erasure is compensable, and this is a training-data and architecture problem, not a structural loss.
 
 In that case the designed-versus-accidental distinction needs restating: perhaps there are no unpriceable capabilities, only undertrained ones.
 
@@ -215,7 +234,7 @@ This isn't a story about AI.
 
 It's the decay mechanism facing any system old enough, complex enough, and layered enough — some of it quantifiable, some unquantifiable, some simply undiscovered.
 
-What makes Haslett's paper remarkable isn't that she found Chinese was damaged. It's that she **gave an invisible phenomenon a visible shape**. She took a semantic channel nobody knew existed and put it inside a peer-reviewed paper.
+What makes Haslett's paper remarkable isn't finding that Chinese was damaged. It's that Haslett **gave an invisible phenomenon a visible shape**, taking a semantic channel nobody knew existed and putting it inside a peer-reviewed paper.
 
 Mullaney closes *The Chinese Typewriter* with something to the effect that history is not a straight evolutionary track but a fluid, constantly deformed under competing constraints.
 

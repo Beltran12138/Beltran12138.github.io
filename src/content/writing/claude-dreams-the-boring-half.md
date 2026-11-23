@@ -3,6 +3,7 @@ title: 'Claude Already Dreams. It Only Got the Boring Half Right.'
 summary: 'Human sleep runs two systems: slow-wave consolidates and deletes contradictions, REM recombines and preserves them. Anthropic built the first half and called it auto-dream. The half they left out already has an engineering name — hallucination — and we spend everything we have suppressing it.'
 pubDate: 2026-06-08
 lang: en
+theme: representation
 tags: [llm, memory, cognition]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (June 2026)'
 ---

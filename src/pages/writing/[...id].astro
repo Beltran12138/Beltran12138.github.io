@@ -32,6 +32,7 @@ const fmt = (d: Date) =>
     year: 'numeric',
     month: zh ? 'numeric' : 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 ---
 
@@ -58,6 +59,23 @@ const fmt = (d: Date) =>
         <> &middot; <a href={`/writing/${sibling.id}`}>{zh ? 'English version' : '中文版'}</a></>
       )}
     </p>
+
+    {(entry.data.confidence || entry.data.falsifier || entry.data.checked) && (
+      <dl class="claim">
+        {entry.data.confidence && <><dt>Confidence</dt><dd>{entry.data.confidence}</dd></>}
+        {entry.data.falsifier && <><dt>Would change my mind</dt><dd>{entry.data.falsifier}</dd></>}
+        {entry.data.checked && <><dt>Last checked</dt><dd>{fmt(entry.data.checked)}{entry.data.checkedScope && <>. {entry.data.checkedScope}</>}</dd></>}
+      </dl>
+    )}
+    {entry.data.corrections.length > 0 && (
+      <details class="claim" open>
+        <summary>Corrections ({entry.data.corrections.length})</summary>
+        <ul>{entry.data.corrections.map((c) => <li>{c.text}</li>)}</ul>
+      </details>
+    )}
+    {!entry.data.featured && (
+      <p class="small muted">{entry.data.checked ? 'Archived: the corrections above weaken the main argument. Awaiting a rewrite.' : 'Archived essay, kept as published. Not rechecked since.'}</p>
+    )}
 
     <Content />
 

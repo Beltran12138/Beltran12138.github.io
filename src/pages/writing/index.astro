@@ -5,32 +5,33 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('writing', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
+const groups = [
+  { label: 'Essays', note: 'Key numbers rechecked against primary sources; the scope is stated on each page.', items: entries.filter((e) => e.data.featured) },
+  { label: 'Archive', note: 'Earlier essays. Those marked with corrections were rechecked and await a rewrite; the rest are as published and not rechecked.', items: entries.filter((e) => !e.data.featured) },
+];
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', timeZone: 'UTC' });
 ---
 
-<Base title="Writing" description="Research notes on crypto market structure, Hong Kong virtual-asset regulation, and AI agents.">
+<Base title="Writing" description="Essays on how language models represent the world, and on when a number deserves trust.">
   <h1>Writing</h1>
-  <p class="lede">
-    Long-form on how language models represent the world &mdash; and on crypto market
-    structure and Hong Kong virtual-asset regulation.
-    Several of these began as Chinese essays and were rewritten, not translated.
-  </p>
+  <p class="lede">Most of these began as Chinese essays and were rewritten in English.</p>
 
-  {entries.length === 0 ? (
-    <p class="muted">Nothing published yet.</p>
-  ) : (
-    <ul class="entries">
-      {entries.map((entry) => (
-        <li>
-          <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
-          <div class="entry-meta">
-            {fmt(entry.data.pubDate)}
-            {entry.data.tags.length > 0 && <> &middot; {entry.data.tags.join(', ')}</>}
-          </div>
-          <p class="small muted" style="margin:.35rem 0 0">{entry.data.summary}</p>
-        </li>
-      ))}
-    </ul>
-  )}
+  {groups.map((g) => (
+    <section>
+      <h2>{g.label}</h2>
+      <p class="small muted">{g.note}</p>
+      <ul class="entries">
+        {g.items.map((entry) => (
+          <li>
+            <a class="entry-title" href={`/writing/${entry.id}`}>{entry.data.title}</a>
+            <div class="entry-meta">
+              {fmt(entry.data.pubDate)}
+              {entry.data.corrections.length > 0 && <> &middot; {entry.data.corrections.length} corrections</>}
+            </div>
+            <p class="small muted" style="margin:.35rem 0 0">{entry.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </Base>

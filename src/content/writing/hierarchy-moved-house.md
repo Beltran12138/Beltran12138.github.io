@@ -3,6 +3,7 @@ title: "AI Didn't Kill Hierarchy. It Moved House."
 summary: 'Block says AI will replace its management layer. Prussia ran that experiment in 1808, won three wars with it, and watched it fail catastrophically in 1914 — then had the surviving staff officers write the history that exonerated the staff system. Sovereignty does not vanish. It relocates.'
 pubDate: 2026-05-18
 lang: en
+theme: institutions
 tags: [ai, organisations, history]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (May 2026)'
 ---

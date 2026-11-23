@@ -31,6 +31,7 @@ export const GET: APIRoute = async ({ site }) => {
     { loc: `${base}/`, lastmod: iso(newest), priority: '1.0' },
     { loc: `${base}/writing`, lastmod: iso(newest), priority: '0.9' },
     { loc: `${base}/projects`, lastmod: iso(newest), priority: '0.7' },
+    { loc: `${base}/corrections`, lastmod: iso(newest), priority: '0.6' },
     { loc: `${base}/cv`, lastmod: iso(newest), priority: '0.7' },
     ...entries.map((entry) => ({
       loc: `${base}/writing/${entry.id}`,

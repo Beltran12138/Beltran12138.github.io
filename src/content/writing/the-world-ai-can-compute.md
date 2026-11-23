@@ -3,6 +3,7 @@ title: "The World AI Can Compute, and the World It Can't Say"
 summary: 'AlphaFold won a Nobel Prize without leaving behind a single readable equation. Three hard constraints suggest that for a large class of high-dimensional systems, compressing the law back into symbols a human can hold is not hard — it is unavailable.'
 pubDate: 2026-06-15
 lang: en
+theme: representation
 tags: [llm, epistemics]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (June 2026)'
 ---

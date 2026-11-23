@@ -3,6 +3,7 @@ title: 'From Autocomplete to GPT: When Did "Completion" Become "Understanding"?'
 summary: "Your phone's autocomplete and GPT run the same move — predict the next token — with no point on the continuum where 'understanding' switches on. Emergence, it turns out, is not a property the model acquired. It's a word we started using — and Anthropic's own J-space paper won't use it."
 pubDate: 2026-08-31
 lang: en
+theme: representation
 tags: [llm, epistemics]
 originalSource: 'Adapted from the Chinese original (2026)'
 ---

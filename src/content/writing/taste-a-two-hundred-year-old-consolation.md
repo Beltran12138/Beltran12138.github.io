@@ -3,6 +3,7 @@ title: 'Taste: A Two-Hundred-Year-Old Consolation'
 summary: 'Silicon Valley has converged on taste as the skill AI cannot replace. Handloom weavers said it about hand-feel, Arts and Crafts said it about the maker''s judgment, typesetters said it about the eye. Every time, the narrow technical claim was true. Every time, the top tier fed 1–2% of the trade.'
 pubDate: 2026-05-15
 lang: en
+theme: institutions
 tags: [ai, labour, history]
 originalSource: 'Adapted from the Chinese original, first published on Xiaohongshu (May 2026)'
 ---

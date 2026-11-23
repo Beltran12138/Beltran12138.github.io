@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { person, roles, projects, groupLabels } from '../data/profile';
+import { person, roles, projects, themes } from '../data/profile';
 
 /**
  * /llms.txt
@@ -37,10 +37,8 @@ export const GET: APIRoute = async ({ site }) => {
 
   if (current) {
     lines.push(
-      `${current.title} at ${current.org}${current.orgNote ? ` (${current.orgNote})` : ''}. ` +
-        `Work spans perpetual-futures product design, OTC and settlement architecture, ` +
-        `Hong Kong virtual-asset market research, and open-source tooling that applies ` +
-        `AI agents to crypto market intelligence.`
+      `${current.title} at ${current.org}. Builds evidence gates for trading agents and evaluation harnesses, ` +
+        `and writes about how language models represent the world.`
     );
     lines.push('');
   }
@@ -48,25 +46,25 @@ export const GET: APIRoute = async ({ site }) => {
   lines.push('## Pages');
   lines.push(`- [CV](${base}/cv): Full professional history, education, and contact details.`);
   lines.push(`- [Projects](${base}/projects): Open-source tooling, grouped by theme.`);
+  lines.push(`- [Corrections](${base}/corrections): Errors found in published essays.`);
   lines.push(`- [Writing](${base}/writing): Research notes and long-form analysis.`);
   lines.push('');
 
   if (entries.length > 0) {
-    lines.push('## Writing');
-    for (const entry of entries) {
-      lines.push(`- [${entry.data.title}](${base}/writing/${entry.id}): ${entry.data.summary}`);
+    for (const [label, featured] of [['Essays', true], ['Archive (not rechecked, or awaiting a rewrite after corrections)', false]] as const) {
+      lines.push(`## ${label}`);
+      for (const entry of entries.filter((e) => e.data.featured === featured)) {
+        lines.push(`- [${entry.data.title}](${base}/writing/${entry.id}): ${entry.data.summary}`);
+      }
+      lines.push('');
     }
-    lines.push('');
   }
 
-  const order = ['market-intelligence', 'agent-infra', 'research', 'language-llm'] as const;
-  for (const group of order) {
-    const items = projects.filter((p) => p.group === group);
+  for (const group of [...themes.map((t) => ({ id: t.id as string, label: t.label })), { id: 'tools', label: 'Markets and tools' }]) {
+    const items = projects.filter((p) => p.theme === group.id);
     if (items.length === 0) continue;
-    lines.push(`## ${groupLabels[group]}`);
-    for (const p of items) {
-      lines.push(`- [${p.name}](${p.url}): ${p.summary}`);
-    }
+    lines.push(`## Projects: ${group.label}`);
+    for (const p of items) lines.push(`- [${p.name}](${p.url}): ${p.summary}`);
     lines.push('');
   }
 
